@@ -1,8 +1,11 @@
 import { useState } from "react"
+
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
-import { Sidebar } from "@/components/Sidebar"
-import { Overview } from "@/components/Overview"
-import { Settings } from "@/components/Settings"
+
+import { Sidebar } from "@/components/shared/Sidebar"
+
+import { Overview } from "@/pages/Overview"
+import { Settings } from "@/pages/Settings"
 
 
 function App() {

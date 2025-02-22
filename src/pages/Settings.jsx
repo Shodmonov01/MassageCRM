@@ -1,5 +1,3 @@
-import { Button } from "./ui/button";
-
 export function Settings() {
   return (
     <div>

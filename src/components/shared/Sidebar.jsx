@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom"
 import { ChevronLeft, ChevronRight, LayoutDashboard, Settings } from "lucide-react"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 
 export function Sidebar({ isSidebarOpen, toggleSidebar }) {
   return (
