@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 export function Settings() {
   return (
     <div>
@@ -5,6 +7,7 @@ export function Settings() {
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-4">User Settings</h2>
         <p>Add user settings controls here...</p>
+        <Button></Button>
       </div>
     </div>
   )

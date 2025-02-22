@@ -1,12 +1,9 @@
 import { useState } from "react"
 
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
-
-import { Sidebar } from "@/components/shared/Sidebar"
-
-import { Overview } from "@/pages/Overview"
-import { Settings } from "@/pages/Settings"
-
+import { Sidebar } from "./components/shared/Sidebar"
+import { Overview } from "./pages/Overview"
+import { Settings } from "./pages/Settings"
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
