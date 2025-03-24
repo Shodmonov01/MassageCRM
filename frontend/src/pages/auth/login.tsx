@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useAuth } from '@/context/login-context'
+import { useEffect } from 'react'
 
 const formSchema = z.object({
     login: z.string().nonempty({ message: 'Введите логин' }),
@@ -15,6 +17,14 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>
 
 const Login = () => {
+    const { userRole } = useAuth()
+
+    useEffect(() => {
+        if (userRole) {
+            window.location.href = '/'
+        }
+    }, [userRole])
+
     const form = useForm<UserFormValue>({
         resolver: zodResolver(formSchema),
         defaultValues: {
