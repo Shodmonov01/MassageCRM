@@ -19,9 +19,20 @@ import Login from '@/pages/auth/login'
 const AppRoutes = () => {
     const { userRole } = useAuth()
 
+    // if (!userRole) {
+    //     return <Navigate to='/login' replace />
+    // }
+
+    let defaultRoute = ''
+    if (userRole === 'admin') defaultRoute = '/home'
+    if (userRole === 'super_admin') defaultRoute = '/accessControl'
+    if (userRole === 'operator') defaultRoute = '/apartmentCalculation'
+
     return (
         <Routes>
             <Route element={<MainLayout />}>
+                {/* <Route path='/' element={<Navigate to={defaultRoute} replace />} /> */}
+
                 <Route element={<ProtectedRoute allowedRoles={['admin']} userRole={userRole} />}>
                     <Route index element={<Navigate to='/home' replace />} />
                     <Route path='/home' element={<Home />} />
@@ -31,7 +42,7 @@ const AppRoutes = () => {
                     <Route path='/financeReport' element={<FinanceReport />} />
                 </Route>
 
-                <Route element={<ProtectedRoute allowedRoles={['superAdmin']} userRole={userRole} />}>
+                <Route element={<ProtectedRoute allowedRoles={['super_admin']} userRole={userRole} />}>
                     <Route index element={<Navigate to='/accessControl' replace />} />
                     <Route path='/accessControl' element={<AccessControl />} />
                     <Route path='/adminReport' element={<AdminReport />} />

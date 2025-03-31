@@ -11,16 +11,17 @@ const ProtectedRoute = ({
     userRole
 }: {
     allowedRoles: string[]
-    userRole: 'admin' | 'superAdmin' | 'operator' | null
+    userRole: 'admin' | 'super_admin' | 'operator' | null
 }) => {
     console.log('userRole from useAuth:', userRole)
+    const role = localStorage.getItem('role')
 
-    if (userRole === null) {
-        return <div>Loading...</div>
-    }
-    console.log('userRole from useAuth:', userRole)
+    // if (userRole === null) {
+    //     return <div>Loading...</div>
+    // }
+    console.log('role from useAuth:', role)
 
-    const defaultRoute = roleDefaultRoutes[userRole]
+    const defaultRoute = roleDefaultRoutes[role]
 
     if (window.location.pathname === '/') {
         return <Navigate to={defaultRoute} replace />

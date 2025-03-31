@@ -33,6 +33,7 @@ export default function OperatorsPage() {
                 <Loader2 />
             </div>
         )
+
     if (error)
         return (
             <div className='flex justify-center p-8 text-red-500'>

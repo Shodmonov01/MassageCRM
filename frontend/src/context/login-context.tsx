@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
-type UserRole = 'admin' | 'superAdmin' | 'operator' | null
+type UserRole = 'admin' | 'super_admin' | 'operator' | null
 
 interface AuthContextType {
     userRole: UserRole
@@ -12,7 +12,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [userRole, setUserRole] = useState<UserRole>(null)
-    const savedRole = localStorage.getItem('userRole') as UserRole
+    const savedRole = localStorage.getItem('role') as UserRole
     console.log('userRolewef', userRole)
 
     useEffect(() => {
@@ -22,7 +22,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, [savedRole])
 
     const logout = () => {
-        localStorage.removeItem('userRole')
+        localStorage.removeItem('token')
+        localStorage.removeItem('role')
         setUserRole(null)
     }
 

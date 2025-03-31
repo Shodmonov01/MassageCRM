@@ -35,6 +35,8 @@ export default function AdminReport() {
                         from: startDate,
                         to: endDate
                     })
+                    console.log(res.data)
+
                     setFiltered(res.data)
                 }
             } catch (error) {
@@ -52,7 +54,7 @@ export default function AdminReport() {
             setISLoading(true)
 
             const res = await api.put(`super-admin/update-admin/${selectedOperator?.id}`, values)
-            console.log(res.data)
+            console.log('dataa', res.data)
         } catch (error) {
             console.error(error)
         } finally {
@@ -84,12 +86,14 @@ export default function AdminReport() {
                     </TableRow>
                 </TableHeader>
                 <TableBody className=''>
-                    {filtered?.map((operator: TypeOperator) => (
+                    {filtered?.map((operator: any) => (
                         <TableRow key={operator.id}>
                             <TableCell>{operator.id}</TableCell>
                             <TableCell>{operator.login}</TableCell>
                             <TableCell>{operator.branch_name}</TableCell>
                             <TableCell>{operator.role}</TableCell>
+                            <TableCell>{operator.total_amount}</TableCell>
+                            <TableCell>{operator.admin_part}</TableCell>
                             <TableCell className='text-center'>
                                 <Button
                                     variant='ghost'

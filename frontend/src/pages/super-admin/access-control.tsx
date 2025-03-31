@@ -28,6 +28,7 @@ export default function OperatorsPage() {
         setSelectedOperator(operator)
         setIsCreateDialogOpen(true)
     }
+    console.log('operators', operators)
 
     if (isLoading)
         return (

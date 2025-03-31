@@ -12,7 +12,7 @@ const menuItems = {
         { path: '/operatorStatistics', label: 'Статистика по операторам', icon: <Users /> },
         { path: '/financeReport', label: 'Расходы и доходы', icon: <DollarSign /> }
     ],
-    superAdmin: [
+    super_admin: [
         { path: '/accessControl', label: 'Доступы', icon: <Vote /> },
         { path: '/adminReport', label: 'Отчет администратора', icon: <FileText /> },
         { path: '/operatorReport', label: 'Отчет оператора', icon: <FileText /> },
@@ -23,13 +23,15 @@ const menuItems = {
 
 export function Sidebar({
     isSidebarOpen,
-    toggleSidebar,
-    role
-}: {
+    toggleSidebar
+}: // role
+{
     isSidebarOpen: boolean
     toggleSidebar: () => void
-    role: 'admin' | 'superAdmin' | 'operator' | null
+    // role: 'admin' | 'super_admin' | 'operator' | null
 }) {
+    const role = localStorage.getItem('role')
+
     return (
         <div className={`bg-white h-full p-4 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
             <div className='flex justify-between items-center mb-6'>
