@@ -18,7 +18,6 @@ import Login from '@/pages/auth/login'
 
 const AppRoutes = () => {
     const { userRole } = useAuth()
-    console.log('userRole11', userRole)
 
     return (
         <Routes>

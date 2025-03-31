@@ -1,22 +1,24 @@
 import { NavLink } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, LayoutDashboard, Settings } from 'lucide-react'
+import { ChevronLeft, ChevronRight, LayoutDashboard } from 'lucide-react'
 import { Button } from '../ui/button'
+import { Home, Archive, BarChart2, Users, DollarSign, Key, FileText, Building2, Calculator } from 'lucide-react'
+import { Vote } from 'lucide-react'
 
 const menuItems = {
     admin: [
-        { path: '/home', label: 'Главная' },
-        { path: '/archive', label: 'Архив' },
-        { path: '/girlsStatistics', label: 'Статистика по девушкам' },
-        { path: '/operatorStatistics', label: 'Статистика по операторам' },
-        { path: '/financeReport', label: 'Расходы и доходы' }
+        { path: '/home', label: 'Главная', icon: <Home /> },
+        { path: '/archive', label: 'Архив', icon: <Archive /> },
+        { path: '/girlsStatistics', label: 'Статистика по девушкам', icon: <BarChart2 /> },
+        { path: '/operatorStatistics', label: 'Статистика по операторам', icon: <Users /> },
+        { path: '/financeReport', label: 'Расходы и доходы', icon: <DollarSign /> }
     ],
     superAdmin: [
-        { path: '/accessControl', label: 'Доступы' },
-        { path: '/adminReport', label: 'Отчет администратора' },
-        { path: '/operatorReport', label: 'Отчет оператора' },
-        { path: '/branches', label: 'Филиал и ветки' }
+        { path: '/accessControl', label: 'Доступы', icon: <Vote /> },
+        { path: '/adminReport', label: 'Отчет администратора', icon: <FileText /> },
+        { path: '/operatorReport', label: 'Отчет оператора', icon: <FileText /> },
+        { path: '/branches', label: 'Филиал и ветки', icon: <Building2 /> }
     ],
-    operator: [{ path: '/apartmentCalculation', label: 'Расчет кв.' }]
+    operator: [{ path: '/apartmentCalculation', label: 'Расчет кв.', icon: <Calculator /> }]
 }
 
 export function Sidebar({
@@ -49,7 +51,7 @@ export function Sidebar({
                                         }`
                                     }
                                 >
-                                    <LayoutDashboard className='mr-2' />
+                                    <span className='mr-2'>{item.icon}</span>
                                     {isSidebarOpen && item.label}
                                 </NavLink>
                             </li>
