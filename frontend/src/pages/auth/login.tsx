@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/context/login-context'
 import { useEffect } from 'react'
 import api from '@/Api'
 import { useNavigate } from 'react-router'
@@ -20,13 +19,14 @@ type UserFormValue = z.infer<typeof formSchema>
 
 const Login = () => {
     const navigate = useNavigate()
-    const { userRole } = useAuth()
+
+    const role = localStorage.getItem('role')
 
     useEffect(() => {
-        if (userRole) {
+        if (role) {
             navigate('/')
         }
-    }, [userRole])
+    }, [role])
 
     const form = useForm<UserFormValue>({
         resolver: zodResolver(formSchema),

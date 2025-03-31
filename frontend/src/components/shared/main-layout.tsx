@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
-import { useAuth } from '@/context/login-context'
-
 import { Sidebar } from './Sidebar'
 
 const MainLayout = () => {
-    const { userRole } = useAuth()
     const navigate = useNavigate()
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -28,8 +25,6 @@ const MainLayout = () => {
             }
         }
     }, [token])
-
-    console.log(userRole)
 
     return (
         <div className='flex h-screen bg-gray-100'>
