@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { useAuth } from '@/context/login-context'
 
 import ProtectedRoute from './protected-route'
 import MainLayout from '@/components/shared/main-layout'
@@ -17,13 +16,10 @@ import ApartmentCalculation from '@/pages/operator/apartment-calculation'
 import Login from '@/pages/auth/login'
 
 const AppRoutes = () => {
-    const { userRole } = useAuth()
-    console.log('userRole11', userRole)
-
     return (
         <Routes>
             <Route element={<MainLayout />}>
-                <Route element={<ProtectedRoute allowedRoles={['admin']} userRole={userRole} />}>
+                <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                     <Route index element={<Navigate to='/home' replace />} />
                     <Route path='/home' element={<Home />} />
                     <Route path='/archive' element={<Archive />} />
@@ -32,7 +28,7 @@ const AppRoutes = () => {
                     <Route path='/financeReport' element={<FinanceReport />} />
                 </Route>
 
-                <Route element={<ProtectedRoute allowedRoles={['superAdmin']} userRole={userRole} />}>
+                <Route element={<ProtectedRoute allowedRoles={['super_admin']} />}>
                     <Route index element={<Navigate to='/accessControl' replace />} />
                     <Route path='/accessControl' element={<AccessControl />} />
                     <Route path='/adminReport' element={<AdminReport />} />
@@ -40,7 +36,7 @@ const AppRoutes = () => {
                     <Route path='/branches' element={<Branches />} />
                 </Route>
 
-                <Route element={<ProtectedRoute allowedRoles={['operator']} userRole={userRole} />}>
+                <Route element={<ProtectedRoute allowedRoles={['operator']} />}>
                     <Route index element={<Navigate to='/apartmentCalculation' replace />} />
                     <Route path='/apartmentCalculation' element={<ApartmentCalculation />} />
                 </Route>

@@ -6,21 +6,12 @@ const roleDefaultRoutes: Record<string, string> = {
     operator: '/apartmentCalculation'
 }
 
-const ProtectedRoute = ({
-    allowedRoles,
-    userRole
-}: {
-    allowedRoles: string[]
-    userRole: 'admin' | 'superAdmin' | 'operator' | null
-}) => {
-    console.log('userRole from useAuth:', userRole)
+const ProtectedRoute = ({ allowedRoles }: { allowedRoles: string[] }) => {
+    const role = localStorage.getItem('role')
 
-    if (userRole === null) {
-        return <div>Loading...</div>
-    }
-    console.log('userRole from useAuth:', userRole)
+    console.log('role from useAuth:', role)
 
-    const defaultRoute = roleDefaultRoutes[userRole]
+    const defaultRoute = roleDefaultRoutes[role]
 
     if (window.location.pathname === '/') {
         return <Navigate to={defaultRoute} replace />

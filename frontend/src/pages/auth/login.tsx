@@ -6,8 +6,9 @@ import { useForm } from 'react-hook-form'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/context/login-context'
 import { useEffect } from 'react'
+import api from '@/Api'
+import { useNavigate } from 'react-router'
 
 const formSchema = z.object({
     login: z.string().nonempty({ message: 'Введите логин' }),
@@ -17,24 +18,37 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>
 
 const Login = () => {
-    const { userRole } = useAuth()
+    const navigate = useNavigate()
+
+    const role = localStorage.getItem('role')
 
     useEffect(() => {
-        if (userRole) {
-            window.location.href = '/'
+        if (role) {
+            navigate('/')
         }
-    }, [userRole])
+    }, [role])
 
     const form = useForm<UserFormValue>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            login: 'login',
-            password: 'password'
+            login: '',
+            password: ''
         }
     })
 
-    const onSubmit = (values: UserFormValue) => {
-        console.log('Login', values)
+    const onSubmit = async (values: UserFormValue) => {
+        try {
+            const res = await api.post('all-login', values)
+            localStorage.setItem('token', res.data.token)
+            localStorage.setItem('role', res.data.result.role)
+            // if (res.data.result.role === 'admin') navigate('/home')
+            // if (res.data.result.role === 'super_admin') navigate('/accessControl')
+            // if (res.data.result.role === 'operator') navigate('/apartmentCalculation')
+            navigate('/')
+            console.log(res.data)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
