@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 
 import dayjs from 'dayjs'
 
-import api from '@/Api'
+import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
-import { Edit, Loader2 } from 'lucide-react'
+import { Edit, Loader2, Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -15,8 +15,8 @@ import FilterDate from '@/components/shared/filter-date'
 export default function AdminReport() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
-    const [startDate, setStartDate] = useState<Date | undefined>(dayjs().subtract(1, 'day').startOf('day').toDate())
-    const [endDate, setEndDate] = useState<Date | undefined>(dayjs().endOf('day').toDate())
+    const [startDate, setStartDate] = useState<string | any>(dayjs().subtract(1, 'day').startOf('day').toDate())
+    const [endDate, setEndDate] = useState<string | any>(dayjs().endOf('day').toDate())
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
@@ -71,7 +71,18 @@ export default function AdminReport() {
 
     return (
         <div className='w-full'>
-            <FilterDate startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+            <div className='flex justify-between items-center'>
+                <FilterDate
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                />
+
+                <Button onClick={() => setIsCreateDialogOpen(true)} className='ml-auto'>
+                    <Plus className='mr-2 h-4 w-4' /> Добавить админ
+                </Button>
+            </div>
 
             <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
                 <TableHeader className='!bg-[#f1f1f1]'>
@@ -88,12 +99,12 @@ export default function AdminReport() {
                 <TableBody className=''>
                     {filtered?.map((operator: any) => (
                         <TableRow key={operator.id}>
-                            <TableCell>{operator.id}</TableCell>
-                            <TableCell>{operator.login}</TableCell>
+                            <TableCell>{operator.admin_id}</TableCell>
+                            <TableCell>{operator.admin_name}</TableCell>
                             <TableCell>{operator.branch_name}</TableCell>
-                            <TableCell>{operator.role}</TableCell>
-                            <TableCell>{operator.total_amount}</TableCell>
-                            <TableCell>{operator.admin_part}</TableCell>
+                            <TableCell>{operator.total_working_hours}</TableCell>
+                            <TableCell>{operator.income}</TableCell>
+                            <TableCell>{operator.salary}</TableCell>
                             <TableCell className='text-center'>
                                 <Button
                                     variant='ghost'

@@ -7,13 +7,13 @@ import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
 
 interface TypeProps {
-    startDate: string | any
-    setStartDate: (date: string | any) => void
-    endDate: string | any
-    setEndDate: (date: string | any) => void
+    startDate: string
+    setStartDate: (date: string) => void
+    endDate: string
+    setEndDate: (date: string) => void
 }
 
-const FilterDate: React.FC<TypeProps> = ({ startDate, setStartDate, endDate, setEndDate }) => {
+const FilterTime: React.FC<TypeProps> = ({ startDate, setStartDate, endDate, setEndDate }) => {
     return (
         <div>
             <div className='flex items-center gap-2'>
@@ -26,12 +26,14 @@ const FilterDate: React.FC<TypeProps> = ({ startDate, setStartDate, endDate, set
                             }`}
                         >
                             <CalendarIcon className='mr-2 h-4 w-4' />
-                            {startDate ? format(startDate, 'dd.MM.yyyy') : 'Начальная дата'}
+                            <input
+                                value={startDate}
+                                onChange={e => setStartDate(e.target.value)}
+                                type='time'
+                                className='w-full focus:outline-none focus:bg-inherit bg-inherit'
+                            />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent className='w-auto p-0'>
-                        <Calendar mode='single' selected={startDate} onSelect={setStartDate} initialFocus />
-                    </PopoverContent>
                 </Popover>
                 <span className='text-muted-foreground'>по</span>
                 <Popover>
@@ -43,16 +45,21 @@ const FilterDate: React.FC<TypeProps> = ({ startDate, setStartDate, endDate, set
                             }}`}
                         >
                             <CalendarIcon className='mr-2 h-4 w-4' />
-                            {endDate ? format(endDate, 'dd.MM.yyyy') : 'Конечная дата'}
+                            <input
+                                value={endDate}
+                                onChange={e => setEndDate(e.target.value)}
+                                type='time'
+                                className='w-full focus:outline-none focus:bg-inherit bg-inherit'
+                            />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent className='w-auto p-0'>
+                    {/* <PopoverContent className='w-auto p-0'>
                         <Calendar mode='single' selected={endDate} onSelect={setEndDate} initialFocus />
-                    </PopoverContent>
+                    </PopoverContent> */}
                 </Popover>
             </div>
         </div>
     )
 }
 
-export default FilterDate
+export default FilterTime

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import api from '@/Api'
+import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
 import { Edit, Loader2, Plus } from 'lucide-react'
@@ -9,8 +9,10 @@ import { Edit, Loader2, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Modal from './components/accessModal'
+import { useNavigate } from 'react-router-dom'
 
 export default function OperatorsPage() {
+    const navigate = useNavigate()
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [iSLoading, setISLoading] = useState(false)
@@ -37,12 +39,15 @@ export default function OperatorsPage() {
             </div>
         )
 
-    if (error)
+    if (error) {
+        localStorage.removeItem('token')
+        navigate('/login')
         return (
             <div className='flex justify-center p-8 text-red-500'>
                 Error loading operators: {(error as Error).message}
             </div>
         )
+    }
 
     const onSubmit = async (values: any) => {
         try {

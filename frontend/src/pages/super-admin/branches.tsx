@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import api from '@/Api'
+import api from '@/api/Api'
 import { TypeBranch, TypeOperator } from '@/type/type'
 
 import { Edit, Loader2, Plus } from 'lucide-react'
@@ -21,6 +21,7 @@ export default function OperatorsPage() {
         const response = await api.get('/branch')
         return response.data
     })
+    console.log('branches', branches)
 
     const handleEdit = (operator: TypeOperator) => {
         setSelectedOperator(operator)
@@ -46,7 +47,7 @@ export default function OperatorsPage() {
             <div className='flex flex-row items-center justify-between'>
                 <p>Операторы</p>
                 <Button onClick={() => setIsCreateDialogOpen(true)} className='ml-auto'>
-                    <Plus className='mr-2 h-4 w-4' /> Создать участника
+                    <Plus className='mr-2 h-4 w-4' /> Добавить филиал
                 </Button>
             </div>
             {/* <CardContent> */}
@@ -55,9 +56,6 @@ export default function OperatorsPage() {
                     <TableRow>
                         <TableHead className='w-[80px]'>ID</TableHead>
                         <TableHead>Имя</TableHead>
-                        <TableHead>Филиал</TableHead>
-                        {/* <TableHead>Ветка</TableHead> */}
-                        <TableHead>Роль</TableHead>
                         <TableHead className='w-[100px] text-center'>Действия</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -65,10 +63,7 @@ export default function OperatorsPage() {
                     {branches?.map((operator: TypeBranch) => (
                         <TableRow key={operator.id}>
                             <TableCell>{operator.id}</TableCell>
-                            {/* <TableCell>{operator.}</TableCell> */}
-                            {/* <TableCell>{operator.branch_name}</TableCell> */}
-                            {/* <TableCell>{operator}</TableCell> */}
-                            {/* <TableCell>{operator.role}</TableCell> */}
+                            <TableCell>{operator.name}</TableCell>
                             <TableCell className='text-center'>
                                 <Button
                                     variant='ghost'

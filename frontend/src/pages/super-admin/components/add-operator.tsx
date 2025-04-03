@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 
-const Modal: React.FC<{
+const ModalAddOperator: React.FC<{
     isCreateDialogOpen: boolean
     setIsCreateDialogOpen: (isOpen: boolean) => void
     selectedOperator: any | null
@@ -31,19 +31,6 @@ const Modal: React.FC<{
             admin_id: 0
         }
     })
-
-    // const onSubmit = async (values: any) => {
-    //     try {
-    //         setIsLoading(true)
-
-    //         const res = await api.put(`/super-admin/update-operator/${selectedOperator.id}`, values)
-    //         console.log(res.data)
-    //     } catch (error) {
-    //         console.error(error)
-    //     } finally {
-    //         setIsLoading(false)
-    //     }
-    // }
 
     const { data: branches } = useQuery<TypeBranch[]>(['branches'], async () => {
         const response = await api.get('/branch')
@@ -68,7 +55,7 @@ const Modal: React.FC<{
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Редактировать оператора</DialogTitle>
+                    <DialogTitle>Добавить оператор</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -154,4 +141,4 @@ const Modal: React.FC<{
     )
 }
 
-export default Modal
+export default ModalAddOperator

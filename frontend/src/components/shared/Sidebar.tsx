@@ -25,17 +25,10 @@ const menuItems = {
     operator: [{ path: '/apartmentCalculation', label: 'Расчет кв.', icon: <Calculator /> }]
 }
 
-export function Sidebar({
-    isSidebarOpen,
-    toggleSidebar
-}: // role
-{
-    isSidebarOpen: boolean
-    toggleSidebar: () => void
-    // role: 'admin' | 'super_admin' | 'operator' | null
-}) {
+export function Sidebar({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boolean; toggleSidebar: () => void }) {
     const navigate = useNavigate()
-    const role = localStorage.getItem('role')
+
+    const role = localStorage.getItem('role') as keyof typeof menuItems
 
     const logout = () => {
         localStorage.removeItem('token')
@@ -54,22 +47,21 @@ export function Sidebar({
             <div className='flex flex-col flex-1 justify-between h-[90%] '>
                 <nav>
                     <ul className='space-y-2'>
-                        {role &&
-                            menuItems[role].map(item => (
-                                <li key={item.path}>
-                                    <NavLink
-                                        to={item.path}
-                                        className={({ isActive }) =>
-                                            `flex items-center p-2 rounded-lg ${
-                                                isActive ? 'bg-gray-100' : 'hover:bg-gray-50'
-                                            }`
-                                        }
-                                    >
-                                        <span className='mr-2'>{item.icon}</span>
-                                        {isSidebarOpen && item.label}
-                                    </NavLink>
-                                </li>
-                            ))}
+                        {menuItems[role].map(item => (
+                            <li key={item.path}>
+                                <NavLink
+                                    to={item.path}
+                                    className={({ isActive }) =>
+                                        `flex items-center p-2 rounded-lg ${
+                                            isActive ? 'bg-gray-100' : 'hover:bg-gray-50'
+                                        }`
+                                    }
+                                >
+                                    <span className='mr-2'>{item.icon}</span>
+                                    {isSidebarOpen && item.label}
+                                </NavLink>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
                 <div>

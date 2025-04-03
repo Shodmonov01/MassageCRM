@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useEffect } from 'react'
-import api from '@/Api'
+import api from '@/api/Api'
 import { useNavigate } from 'react-router'
 
 const formSchema = z.object({
@@ -52,44 +52,48 @@ const Login = () => {
     }
 
     return (
-        <div className='flex justify-center flex-col items-center p-10 gap-12'>
-            <p className='text-[32px]'>Вход</p>
-            <div className='xl:w-[530px]'>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full '>
-                        <FormField
-                            control={form.control}
-                            name='login'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Логин</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder='Введите логин' {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+        <div className='h-screen py-24 flex justify-center'>
+            <div>
+                <div className='flex xl:w-[450px] shadow-lg border-2 border-gray-100 rounded-xl justify-center flex-col items-center p-10 gap-12 '>
+                    <p className='text-[32px]'>Вход</p>
+                    <div className='w-full'>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full '>
+                                <FormField
+                                    control={form.control}
+                                    name='login'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Логин</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder='Введите логин' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                        <FormField
-                            control={form.control}
-                            name='password'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Пароль</FormLabel>
-                                    <FormControl>
-                                        <Input type='password' placeholder='Введите пароль' {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                <FormField
+                                    control={form.control}
+                                    name='password'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Пароль</FormLabel>
+                                            <FormControl>
+                                                <Input type='password' placeholder='Введите пароль' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                        <Button variant='default' type='submit' className='w-full'>
-                            Войти
-                        </Button>
-                    </form>
-                </Form>
+                                <Button variant='default' type='submit' className='w-full !mt-8'>
+                                    Войти
+                                </Button>
+                            </form>
+                        </Form>
+                    </div>
+                </div>
             </div>
         </div>
     )
