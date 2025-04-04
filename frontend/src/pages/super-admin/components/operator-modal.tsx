@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 
-const ModalAddOperator: React.FC<{
+const ModalOperator: React.FC<{
     isCreateDialogOpen: boolean
     setIsCreateDialogOpen: (isOpen: boolean) => void
     selectedOperator: any | null
@@ -28,28 +28,48 @@ const ModalAddOperator: React.FC<{
             login: '',
             password: '',
             branch_id: 0,
-            admin_id: 0
+            admin_id: 0,
+            town_name: 0
         }
     })
+    console.log('selectedOperator', selectedOperator)
 
-    const { data: branches } = useQuery<TypeBranch[]>(['branches'], async () => {
-        const response = await api.get('/branch')
-        return response.data
-    })
+    const { data: branches } = useQuery<TypeBranch[]>(
+        ['branches'],
+        async () => {
+            const response = await api.get('/branch')
+            return response.data
+        },
+        {
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false
+        }
+    )
 
-    const { data: admins } = useQuery(['admins'], async () => {
-        const response = await api.get('/super-admin/all-admin')
-        return response.data
-    })
+    const { data: town } = useQuery<TypeBranch[]>(
+        ['town'],
+        async () => {
+            const response = await api.get('town')
+            return response.data
+        },
+        {
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false
+        }
+    )
 
     useEffect(() => {
         if (selectedOperator) {
             const brandId = branches?.find(b => b.name === selectedOperator.branch_name)?.id
+            const townId = town?.find(b => b.name === selectedOperator.town_name)?.id
 
             form.reset({
                 login: selectedOperator.login,
                 branch_id: brandId,
-                password: ''
+                password: '',
+                town_name: townId
             })
         }
     }, [selectedOperator])
@@ -58,7 +78,7 @@ const ModalAddOperator: React.FC<{
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Добавить оператор</DialogTitle>
+                    <DialogTitle>Редактировать оператора</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -123,23 +143,23 @@ const ModalAddOperator: React.FC<{
 
                         <FormField
                             control={form.control}
-                            name='admin_id'
+                            name='town_name'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Админ</FormLabel>
+                                    <FormLabel>Филиал</FormLabel>
                                     <Select
                                         onValueChange={value => field.onChange(Number.parseInt(value))}
                                         value={field.value ? field.value.toString() : undefined}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder='Выберите админ' />
+                                                <SelectValue placeholder='Выберите филиал' />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {admins?.map((a: any, index: number) => (
-                                                <SelectItem key={index} value={a.id}>
-                                                    {a.login}
+                                            {town?.map((t: any) => (
+                                                <SelectItem key={t.id} value={t.id.toString()}>
+                                                    {t.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -172,4 +192,4 @@ const ModalAddOperator: React.FC<{
     )
 }
 
-export default ModalAddOperator
+export default ModalOperator

@@ -27,8 +27,6 @@ export default function Archive() {
         setSelectedOperator(operator)
         setIsCreateDialogOpen(true)
     }
-    console.log('endDate', endDate)
-    console.log('startDate', startDate)
 
     useEffect(() => {
         const handleFilter = async () => {
@@ -36,7 +34,6 @@ export default function Archive() {
             try {
                 if (startDate && endDate) {
                     const res = await api.get(`/admin/archive?from=${startDate}&to=${endDate}`)
-                    console.log(res.data)
 
                     setFiltered(res.data)
                 }
@@ -55,7 +52,6 @@ export default function Archive() {
             setISLoading(true)
 
             const res = await api.put(`super-admin/update-admin/${selectedOperator?.id}`, values)
-            console.log('dataa', res.data)
         } catch (error) {
             console.error(error)
         } finally {

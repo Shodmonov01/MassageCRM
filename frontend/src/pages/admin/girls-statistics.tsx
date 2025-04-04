@@ -31,7 +31,6 @@ export default function GirlsStatistics() {
             try {
                 if (startDate && endDate) {
                     const res = await api.get(`/admin/statistic-worker?from=${startDate}&to=${endDate}`)
-                    console.log(res.data)
 
                     setFiltered(res.data)
                 }

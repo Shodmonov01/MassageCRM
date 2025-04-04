@@ -45,7 +45,6 @@ const Login = () => {
             // if (res.data.result.role === 'super_admin') navigate('/accessControl')
             // if (res.data.result.role === 'operator') navigate('/apartmentCalculation')
             navigate('/')
-            console.log(res.data)
         } catch (error) {
             console.log(error)
         }

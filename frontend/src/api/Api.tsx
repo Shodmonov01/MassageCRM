@@ -13,7 +13,6 @@ api.interceptors.request.use(
         if (accessToken) {
             config.headers['Authorization'] = `Bearer ${accessToken}`
         } else {
-            console.warn("Token mavjud emas, foydalanuvchini login sahifasiga yo'naltiring.")
         }
         return config
     },

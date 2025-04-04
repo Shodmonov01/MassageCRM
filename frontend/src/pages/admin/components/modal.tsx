@@ -53,8 +53,6 @@ const Modal: React.FC<{
     useEffect(() => {
         if (selectedOperator) {
             const brandId = branches?.find(b => b.name === selectedOperator.branch_name)?.id
-            console.log('selectedOperator', selectedOperator)
-            console.log('brandId', brandId)
 
             form.reset({
                 login: selectedOperator.login,

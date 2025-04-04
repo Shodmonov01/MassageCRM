@@ -33,7 +33,6 @@ export default function OperatorStatistics() {
                         from: startDate,
                         to: endDate
                     })
-                    console.log(res.data)
 
                     setFiltered(res.data)
                 }

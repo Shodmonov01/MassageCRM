@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { useQueryClient } from '@tanstack/react-query'
 
 import dayjs from 'dayjs'
 
 import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
-import { Edit, Loader2, Plus } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import Modal from './components/accessModal'
+import Modal from './components/admin-modal'
 import FilterDate from '@/components/shared/filter-date'
+import { getColumns } from './components/admin-column'
+import CommonTable from '@/components/shared/table-common'
 
 export default function AdminReport() {
+    const queryClient = useQueryClient()
+
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [startDate, setStartDate] = useState<string | any>(dayjs().subtract(1, 'day').startOf('day').toDate())
@@ -20,32 +22,34 @@ export default function AdminReport() {
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
+    const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
     const handleEdit = (operator: TypeOperator) => {
         setSelectedOperator(operator)
         setIsCreateDialogOpen(true)
     }
 
-    useEffect(() => {
-        const handleFilter = async () => {
-            setIsLoading(true)
-            try {
-                if (startDate && endDate) {
-                    const res = await api.post('/super-admin/admin-filter', {
-                        from: startDate,
-                        to: endDate
-                    })
-                    console.log(res.data)
+    const columns = getColumns(handleEdit)
 
-                    setFiltered(res.data)
-                }
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setIsLoading(false)
+    const handleFilter = async () => {
+        setIsLoading(true)
+        try {
+            if (startDate && endDate) {
+                const res = await api.post('/super-admin/admin-filter', {
+                    from: startDate,
+                    to: endDate
+                })
+
+                setFiltered(res.data)
             }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
         }
+    }
 
+    useEffect(() => {
         handleFilter()
     }, [startDate, endDate])
 
@@ -53,8 +57,13 @@ export default function AdminReport() {
         try {
             setISLoading(true)
 
-            const res = await api.put(`super-admin/update-admin/${selectedOperator?.id}`, values)
-            console.log('dataa', res.data)
+            await api.put(`super-admin/update-admin/${selectedOperator?.admin_id}`, {
+                login: values.admin_name,
+                password: values.password,
+                branch_id: values.branch_id
+            })
+            queryClient.invalidateQueries(['admins'])
+            await handleFilter()
         } catch (error) {
             console.error(error)
         } finally {
@@ -62,12 +71,22 @@ export default function AdminReport() {
         }
     }
 
-    if (isLoading)
-        return (
-            <div className='flex justify-center p-8'>
-                <Loader2 />
-            </div>
-        )
+    const table = useReactTable({
+        data: filtered,
+        columns,
+        state: {
+            sorting: sorting
+        },
+        onSortingChange: (updater: any) => {
+            if (typeof updater === 'function') {
+                setSorting(updater(sorting))
+            } else {
+                setSorting(updater)
+            }
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel()
+    })
 
     return (
         <div className='w-full'>
@@ -78,48 +97,9 @@ export default function AdminReport() {
                     endDate={endDate}
                     setEndDate={setEndDate}
                 />
-
-                <Button onClick={() => setIsCreateDialogOpen(true)} className='ml-auto'>
-                    <Plus className='mr-2 h-4 w-4' /> Добавить админ
-                </Button>
             </div>
 
-            <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
-                <TableHeader className='!bg-[#f1f1f1]'>
-                    <TableRow>
-                        <TableHead className='w-[80px]'>ID</TableHead>
-                        <TableHead>Имя</TableHead>
-                        <TableHead>Филиал</TableHead>
-                        <TableHead>Время</TableHead>
-                        <TableHead>Доход</TableHead>
-                        <TableHead>Зарплата</TableHead>
-                        <TableHead className='w-[100px] text-center'>Действия</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className=''>
-                    {filtered?.map((operator: any) => (
-                        <TableRow key={operator.id}>
-                            <TableCell>{operator.admin_id}</TableCell>
-                            <TableCell>{operator.admin_name}</TableCell>
-                            <TableCell>{operator.branch_name}</TableCell>
-                            <TableCell>{operator.total_working_hours}</TableCell>
-                            <TableCell>{operator.income}</TableCell>
-                            <TableCell>{operator.salary}</TableCell>
-                            <TableCell className='text-center'>
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    onClick={() => handleEdit(operator)}
-                                    className='h-8 w-8'
-                                >
-                                    <Edit className='h-4 w-4' />
-                                    <span className='sr-only'>Редактировать</span>
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <CommonTable table={table} columns={columns} isLoading={isLoading} />
 
             <Modal
                 isCreateDialogOpen={isCreateDialogOpen}

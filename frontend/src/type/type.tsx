@@ -34,4 +34,5 @@ export interface TypeOperator {
     without_spend: string
     working_time: { hours: number }
     role: string
+    admin_id?: number
 }

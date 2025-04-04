@@ -30,7 +30,6 @@ export default function Home() {
         setSelectedOperator(operator)
         setIsCreateDialogOpen(true)
     }
-    console.log('operators', operators)
 
     if (isLoading)
         return (
@@ -52,7 +51,6 @@ export default function Home() {
             setISLoading(true)
 
             const res = await api.put(`super-admin/update-operator/${selectedOperator?.id}`, values)
-            console.log(res.data)
         } catch (error) {
             console.error(error)
         } finally {

@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
 import dayjs from 'dayjs'
 
 import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
-import { Edit, Loader2, Plus } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import FilterDate from '@/components/shared/filter-date'
-import ModalAddOperator from './components/add-operator'
+import ModalOperator from './components/operator-modal'
+import { getColumns } from './components/operator-column'
+import CommonTable from '@/components/shared/table-common'
 
 export default function OperatorReport() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -20,31 +19,33 @@ export default function OperatorReport() {
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
+    const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
     const handleEdit = (operator: TypeOperator) => {
         setSelectedOperator(operator)
         setIsCreateDialogOpen(true)
     }
 
-    useEffect(() => {
-        const handleFilter = async () => {
-            setIsLoading(true)
-            try {
-                if (startDate && endDate) {
-                    const res = await api.post('/super-admin/operator-filter', {
-                        from: startDate,
-                        to: endDate
-                    })
-                    setFiltered(res.data)
-                    console.log('operator', res.data)
-                }
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
+    const columns = getColumns(handleEdit)
 
+    const handleFilter = async () => {
+        setIsLoading(true)
+        try {
+            if (startDate && endDate) {
+                const res = await api.post('/super-admin/operator-filter', {
+                    from: startDate,
+                    to: endDate
+                })
+                setFiltered(res.data)
+            }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
         handleFilter()
     }, [startDate, endDate])
 
@@ -52,8 +53,14 @@ export default function OperatorReport() {
         try {
             setISLoading(true)
 
-            const res = await api.put(`super-admin/update-admin/${selectedOperator?.id}`, values)
-            console.log(res.data)
+            const res = await api.put(`/super-admin/update-operator/${selectedOperator?.id}`, {
+                branch_id: values.branch_id,
+                town_id: values.town_name,
+                login: values.login,
+                password: values.password
+            })
+            handleFilter()
+            setIsCreateDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {
@@ -61,12 +68,22 @@ export default function OperatorReport() {
         }
     }
 
-    if (isLoading)
-        return (
-            <div className='flex justify-center p-8'>
-                <Loader2 />
-            </div>
-        )
+    const table = useReactTable({
+        data: filtered,
+        columns,
+        state: {
+            sorting: sorting
+        },
+        onSortingChange: (updater: any) => {
+            if (typeof updater === 'function') {
+                setSorting(updater(sorting))
+            } else {
+                setSorting(updater)
+            }
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel()
+    })
 
     return (
         <div className='w-full'>
@@ -77,54 +94,11 @@ export default function OperatorReport() {
                     endDate={endDate}
                     setEndDate={setEndDate}
                 />
-
-                <Button onClick={() => setIsCreateDialogOpen(true)} className='ml-auto'>
-                    <Plus className='mr-2 h-4 w-4' /> Добавить оператор
-                </Button>
             </div>
 
-            <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
-                <TableHeader className='!bg-[#f1f1f1]'>
-                    <TableRow>
-                        <TableHead className='w-[80px]'>ID</TableHead>
-                        <TableHead>Имя</TableHead>
-                        <TableHead>Общая касса</TableHead>
-                        <TableHead>Чистая касса</TableHead>
-                        <TableHead>Зарплата</TableHead>
-                        <TableHead>Касса-зп</TableHead>
-                        <TableHead>5%</TableHead>
-                        <TableHead>Итог</TableHead>
-                        <TableHead className='w-[100px] text-center'>Действия</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className=''>
-                    {filtered?.map((operator: TypeOperator) => (
-                        <TableRow key={operator.id}>
-                            <TableCell>{operator.id}</TableCell>
-                            <TableCell>{operator.login}</TableCell>
-                            <TableCell>{operator.result}</TableCell>
-                            <TableCell>{operator.without_spend}</TableCell>
-                            <TableCell>{operator.operator_part}</TableCell>
-                            <TableCell>{operator.total_amount}</TableCell>
-                            <TableCell>{operator.role}</TableCell>
-                            <TableCell>{operator.total_amount}</TableCell>
-                            <TableCell className='text-center'>
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    onClick={() => handleEdit(operator)}
-                                    className='h-8 w-8'
-                                >
-                                    <Edit className='h-4 w-4' />
-                                    <span className='sr-only'>Редактировать</span>
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <CommonTable table={table} columns={columns} isLoading={isLoading} />
 
-            <ModalAddOperator
+            <ModalOperator
                 isCreateDialogOpen={isCreateDialogOpen}
                 setIsCreateDialogOpen={setIsCreateDialogOpen}
                 selectedOperator={selectedOperator}

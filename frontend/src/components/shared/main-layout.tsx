@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-
-import { Sidebar } from './Sidebar'
+import { Sidebar } from './sidebar'
 
 const MainLayout = () => {
     const navigate = useNavigate()
-    // const location = useLocation()
+    const location = useLocation()
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     const toggleSidebar = () => {
@@ -19,7 +18,7 @@ const MainLayout = () => {
         if (!token) {
             navigate('/login')
         } else {
-            if (window.location.pathname === '/') {
+            if (location.pathname === '/') {
                 if (role === 'admin') navigate('/home')
                 if (role === 'super_admin') navigate('/accessControl')
                 if (role === 'operator') navigate('/apartmentCalculation')

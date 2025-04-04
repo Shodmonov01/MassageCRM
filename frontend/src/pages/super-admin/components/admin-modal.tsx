@@ -25,25 +25,12 @@ const Modal: React.FC<{
 }> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
     const form = useForm({
         defaultValues: {
-            login: '',
+            admin_name: '',
             password: '',
             branch_id: 0,
             admin_id: 0
         }
     })
-
-    // const onSubmit = async (values: any) => {
-    //     try {
-    //         setIsLoading(true)
-
-    //         const res = await api.put(`/super-admin/update-operator/${selectedOperator.id}`, values)
-    //         console.log(res.data)
-    //     } catch (error) {
-    //         console.error(error)
-    //     } finally {
-    //         setIsLoading(false)
-    //     }
-    // }
 
     const { data: branches } = useQuery<TypeBranch[]>(['branches'], async () => {
         const response = await api.get('/branch')
@@ -53,11 +40,9 @@ const Modal: React.FC<{
     useEffect(() => {
         if (selectedOperator) {
             const brandId = branches?.find(b => b.name === selectedOperator.branch_name)?.id
-            console.log('selectedOperator', selectedOperator)
-            console.log('brandId', brandId)
 
             form.reset({
-                login: selectedOperator.login,
+                admin_name: selectedOperator.admin_name,
                 branch_id: brandId,
                 password: ''
             })
@@ -74,7 +59,7 @@ const Modal: React.FC<{
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
                         <FormField
                             control={form.control}
-                            name='login'
+                            name='admin_name'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Логин</FormLabel>
