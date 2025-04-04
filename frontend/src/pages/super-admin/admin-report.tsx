@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -31,7 +31,7 @@ export default function AdminReport() {
 
     const columns = getColumns(handleEdit)
 
-    const handleFilter = async () => {
+    const handleFilter = useCallback(async () => {
         setIsLoading(true)
         try {
             if (startDate && endDate) {
@@ -47,11 +47,11 @@ export default function AdminReport() {
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [startDate, endDate])
 
     useEffect(() => {
         handleFilter()
-    }, [startDate, endDate])
+    }, [])
 
     const onSubmit = async (values: any) => {
         try {

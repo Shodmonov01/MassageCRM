@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
 import dayjs from 'dayjs'
@@ -28,26 +28,26 @@ export default function OperatorReport() {
 
     const columns = getColumns(handleEdit)
 
-    const handleFilter = async () => {
+    const handleFilter = useCallback(async () => {
+        if (!startDate || !endDate) return
+
         setIsLoading(true)
         try {
-            if (startDate && endDate) {
-                const res = await api.post('/super-admin/operator-filter', {
-                    from: startDate,
-                    to: endDate
-                })
-                setFiltered(res.data)
-            }
+            const res = await api.post('/super-admin/operator-filter', {
+                from: startDate,
+                to: endDate
+            })
+            setFiltered(res.data)
         } catch (error) {
             console.log(error)
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [startDate, endDate])
 
     useEffect(() => {
         handleFilter()
-    }, [startDate, endDate])
+    }, [])
 
     const onSubmit = async (values: any) => {
         try {
