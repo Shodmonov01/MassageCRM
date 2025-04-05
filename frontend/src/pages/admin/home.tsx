@@ -1,21 +1,24 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
 import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
-import { Edit, Loader2, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useNavigate } from 'react-router-dom'
 import Modal from './components/modal'
+import CommonTable from '@/components/shared/table-common'
+import { getColumns } from './components/home-column'
+import ModalAddOperator from './components/add-operator'
 
 export default function Home() {
-    const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [iSLoading, setISLoading] = useState(false)
+    const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
     const {
         data: operators,
@@ -26,25 +29,7 @@ export default function Home() {
         return response.data
     })
 
-    const handleEdit = (operator: TypeOperator) => {
-        setSelectedOperator(operator)
-        setIsCreateDialogOpen(true)
-    }
-
-    if (isLoading)
-        return (
-            <div className='flex justify-center p-8'>
-                <Loader2 />
-            </div>
-        )
-
-    if (error) {
-        return (
-            <div className='flex justify-center p-8 text-red-500'>
-                Error loading operators: {(error as Error).message}
-            </div>
-        )
-    }
+    const columns = getColumns()
 
     const onSubmit = async (values: any) => {
         try {
@@ -58,63 +43,57 @@ export default function Home() {
         }
     }
 
+    const table = useReactTable({
+        data: operators as any,
+        columns,
+        state: {
+            sorting: sorting
+        },
+        onSortingChange: (updater: any) => {
+            if (typeof updater === 'function') {
+                setSorting(updater(sorting))
+            } else {
+                setSorting(updater)
+            }
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel()
+    })
+
+    const onSubmitAdd = async (values: any) => {
+        try {
+            setISLoading(true)
+
+            console.log(values)
+            await api.post('/admin/add-operator', {
+                branch_id: values.branch_id,
+                admin_id: values.admin_id,
+                login: values.login,
+                password: values.password
+            })
+            queryClient.invalidateQueries(['operators'])
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setISLoading(false)
+        }
+    }
+
     return (
         <div className='w-full'>
             <div className='flex flex-row items-center justify-between'>
-                <Button className=''>
+                <Button onClick={() => setIsCreateDialogOpen(true)} className=''>
                     <Plus className='mr-2 h-4 w-4' /> Создать нового оператора
                 </Button>
             </div>
-            <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
-                <TableHeader className='!bg-[#f1f1f1]'>
-                    <TableRow>
-                        <TableHead className='w-[60px] border'>ID</TableHead>
-                        <TableHead className='border'>Имя</TableHead>
-                        <TableHead className='border'>Общая касса</TableHead>
-                        <TableHead className='border'>Чистая касса</TableHead>
-                        <TableHead className='border'>Зарплата</TableHead>
-                        <TableHead className='border'>Касса-эл</TableHead>
-                        <TableHead className='border'>5%</TableHead>
-                        <TableHead className='border'>Итог</TableHead>
-                        <TableHead className='border'>Филиал</TableHead>
-                        <TableHead className='border'>Ветка</TableHead>
-                        {/* <TableHead className='w-[80px] text-center border'>Действия</TableHead> */}
-                    </TableRow>
-                </TableHeader>
-                <TableBody className=''>
-                    {operators?.map((operator: TypeOperator) => (
-                        <TableRow key={operator.id}>
-                            <TableCell className='border'>{operator.id}</TableCell>
-                            <TableCell className='border'>{operator.login}</TableCell>
-                            <TableCell className='border'>{`${operator.total_amount} ₽`}</TableCell>
-                            <TableCell className='border'>{`${operator.without_spend} ₽`}</TableCell>
-                            <TableCell className='border'>{`${operator.payment} ₽`}</TableCell>
-                            <TableCell className='border'>{`${operator.operator_part} ₽`}</TableCell>
-                            <TableCell className='border'>-</TableCell>
-                            <TableCell className='border'>{`${operator.result} ₽`}</TableCell>
-                            <TableCell className='border'>{operator.branch_name || '-'}</TableCell>
-                            <TableCell className='border'>{operator.town_name || '-'}</TableCell>
-                            {/* <TableCell className='text-center'>
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    onClick={() => handleEdit(operator)}
-                                    className='h-8 w-8'
-                                >
-                                    <Edit className='h-4 w-4' />
-                                    <span className='sr-only'>Редактировать</span>
-                                </Button>
-                            </TableCell> */}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
 
-            <Modal
+            <CommonTable table={table} columns={columns} isLoading={isLoading} />
+
+            <ModalAddOperator
                 isCreateDialogOpen={isCreateDialogOpen}
                 setIsCreateDialogOpen={setIsCreateDialogOpen}
                 selectedOperator={selectedOperator}
-                onSubmit={onSubmit}
+                onSubmit={onSubmitAdd}
                 iSLoading={iSLoading}
             />
         </div>

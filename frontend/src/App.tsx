@@ -1,8 +1,7 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import AppRoutes from './routes/app-routes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useMemo } from 'react'
 
 const queryClient = new QueryClient({
     defaultOptions: {

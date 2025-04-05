@@ -1,29 +1,22 @@
 import { useEffect, useState } from 'react'
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
 import dayjs from 'dayjs'
 
 import api from '@/api/Api'
-import { TypeOperator } from '@/type/type'
 
-import { Edit, Loader2, Plus } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import FilterDate from '@/components/shared/filter-date'
+import CommonTable from '@/components/shared/table-common'
+import { getColumns } from './components/girls-column'
 
 export default function GirlsStatistics() {
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-    const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [startDate, setStartDate] = useState<string>(dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD'))
-
     const [endDate, setEndDate] = useState<string>(dayjs().endOf('day').format('YYYY-MM-DD'))
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
-    const handleEdit = (operator: TypeOperator) => {
-        setSelectedOperator(operator)
-        setIsCreateDialogOpen(true)
-    }
+    const columns = getColumns()
 
     useEffect(() => {
         const handleFilter = async () => {
@@ -44,12 +37,22 @@ export default function GirlsStatistics() {
         handleFilter()
     }, [startDate, endDate])
 
-    if (isLoading)
-        return (
-            <div className='flex justify-center p-8'>
-                <Loader2 />
-            </div>
-        )
+    const table = useReactTable({
+        data: filtered as any,
+        columns,
+        state: {
+            sorting: sorting
+        },
+        onSortingChange: (updater: any) => {
+            if (typeof updater === 'function') {
+                setSorting(updater(sorting))
+            } else {
+                setSorting(updater)
+            }
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel()
+    })
 
     return (
         <div className='w-full'>
@@ -62,34 +65,7 @@ export default function GirlsStatistics() {
                 />
             </div>
 
-            <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
-                <TableHeader className='!bg-[#f1f1f1]'>
-                    <TableRow>
-                        <TableHead className='w-[80px]'>ID</TableHead>
-                        <TableHead>Дата</TableHead>
-                        <TableHead>Имя</TableHead>
-                        <TableHead>Telegram</TableHead>
-                        <TableHead>Количество смен</TableHead>
-                        <TableHead>Часы</TableHead>
-                        <TableHead>Гости</TableHead>
-                        <TableHead>Отмены</TableHead>
-                        <TableHead>Доход</TableHead>
-                        <TableHead>Прибыль</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className=''>
-                    {filtered?.map((operator: any) => (
-                        <TableRow key={operator.id}>
-                            <TableCell>{operator.admin_id}</TableCell>
-                            <TableCell>{operator.admin_name}</TableCell>
-                            <TableCell>{operator.branch_name}</TableCell>
-                            <TableCell>{operator.total_working_hours}</TableCell>
-                            <TableCell>{operator.income}</TableCell>
-                            <TableCell>{operator.salary}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <CommonTable table={table} columns={columns} isLoading={isLoading} />
         </div>
     )
 }

@@ -1,24 +1,22 @@
 import { useEffect, useState } from 'react'
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
 import dayjs from 'dayjs'
 
 import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
-import { Edit, Loader2, Plus } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import FilterDate from '@/components/shared/filter-date'
 import Modal from './components/modal'
 import FilterTime from '@/components/shared/filter-time'
+import CommonTable from '@/components/shared/table-common'
+import { getColumns } from './components/archive-column'
 
 export default function Archive() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [startDate, setStartDate] = useState<string>(dayjs().hour(12).minute(0).format('HH:mm'))
     const [endDate, setEndDate] = useState<string>(dayjs().hour(20).minute(0).format('HH:mm'))
-
+    const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
@@ -27,6 +25,8 @@ export default function Archive() {
         setSelectedOperator(operator)
         setIsCreateDialogOpen(true)
     }
+
+    const columns = getColumns(handleEdit)
 
     useEffect(() => {
         const handleFilter = async () => {
@@ -59,12 +59,22 @@ export default function Archive() {
         }
     }
 
-    if (isLoading)
-        return (
-            <div className='flex justify-center p-8'>
-                <Loader2 />
-            </div>
-        )
+    const table = useReactTable({
+        data: filtered as any,
+        columns,
+        state: {
+            sorting: sorting
+        },
+        onSortingChange: (updater: any) => {
+            if (typeof updater === 'function') {
+                setSorting(updater(sorting))
+            } else {
+                setSorting(updater)
+            }
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel()
+    })
 
     return (
         <div className='w-full'>
@@ -77,42 +87,7 @@ export default function Archive() {
                 />
             </div>
 
-            <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
-                <TableHeader className='!bg-[#f1f1f1]'>
-                    <TableRow>
-                        <TableHead className='w-[80px]'>ID</TableHead>
-                        <TableHead>Дата</TableHead>
-                        <TableHead>Имя</TableHead>
-                        <TableHead>Время за месяц (часы)</TableHead>
-                        <TableHead>Зарплата</TableHead>
-                        <TableHead>Статус</TableHead>
-                        <TableHead className='w-[100px] text-center'>Действия</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className=''>
-                    {filtered?.map((operator: any) => (
-                        <TableRow key={operator.id}>
-                            <TableCell>{operator.admin_id}</TableCell>
-                            <TableCell>{operator.admin_name}</TableCell>
-                            <TableCell>{operator.branch_name}</TableCell>
-                            <TableCell>{operator.total_working_hours}</TableCell>
-                            <TableCell>{operator.income}</TableCell>
-                            <TableCell>{operator.salary}</TableCell>
-                            <TableCell className='text-center'>
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    onClick={() => handleEdit(operator)}
-                                    className='h-8 w-8'
-                                >
-                                    <Edit className='h-4 w-4' />
-                                    <span className='sr-only'>Редактировать</span>
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <CommonTable table={table} columns={columns} isLoading={isLoading} />
 
             <Modal
                 isCreateDialogOpen={isCreateDialogOpen}

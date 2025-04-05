@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-const ModalAddOperator: React.FC<{
+const ModalAddSpend: React.FC<{
     isCreateDialogOpen: boolean
     setIsCreateDialogOpen: (isOpen: boolean) => void
     selectedOperator: any | null
@@ -30,17 +30,14 @@ const ModalAddOperator: React.FC<{
             branch_id: 0,
             admin_id: 0,
             town_id: 0,
-            shift_id: 0
+            operator_id: 0,
+            cost: 0,
+            category: ''
         }
     })
 
     const { data: branches } = useQuery<TypeBranch[]>(['branches'], async () => {
         const response = await api.get('/branch')
-        return response.data
-    })
-
-    const { data: admins } = useQuery(['admins'], async () => {
-        const response = await api.get('/super-admin/all-admin')
         return response.data
     })
 
@@ -92,13 +89,16 @@ const ModalAddOperator: React.FC<{
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
                         <FormField
                             control={form.control}
-                            name='login'
+                            name='cost'
+                            rules={{ required: 'Пароль обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Логин</FormLabel>
+                                    <FormLabel>Cost</FormLabel>
+
                                     <FormControl>
-                                        <Input {...field} placeholder='Логин оператора' />
+                                        <Input {...field} placeholder={''} />
                                     </FormControl>
+
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -106,14 +106,14 @@ const ModalAddOperator: React.FC<{
 
                         <FormField
                             control={form.control}
-                            name='password'
-                            rules={{ required: 'Пароль обязателен' }}
+                            name='category'
+                            rules={{ required: 'Категория обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Пароль</FormLabel>
+                                    <FormLabel>Категория</FormLabel>
 
                                     <FormControl>
-                                        <Input type='password' {...field} placeholder={'Пароль оператора'} />
+                                        <Input {...field} placeholder={'категория'} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -149,7 +149,7 @@ const ModalAddOperator: React.FC<{
                             )}
                         />
 
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name='admin_id'
                             render={({ field }) => (
@@ -175,7 +175,7 @@ const ModalAddOperator: React.FC<{
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
 
                         <FormField
                             control={form.control}
@@ -207,7 +207,7 @@ const ModalAddOperator: React.FC<{
 
                         <FormField
                             control={form.control}
-                            name='shift_id'
+                            name='operator_id'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Смена</FormLabel>
@@ -256,4 +256,4 @@ const ModalAddOperator: React.FC<{
     )
 }
 
-export default ModalAddOperator
+export default ModalAddSpend

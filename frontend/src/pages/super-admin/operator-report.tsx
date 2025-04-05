@@ -14,8 +14,28 @@ import CommonTable from '@/components/shared/table-common'
 export default function OperatorReport() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
-    const [startDate, setStartDate] = useState<string | any>(dayjs().subtract(1, 'day').startOf('day').toDate())
-    const [endDate, setEndDate] = useState<string | any>(dayjs().endOf('day').toDate())
+    const [startDate, setStartDateRaw] = useState<string>(
+        dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD')
+    )
+    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').format('YYYY-MM-DD'))
+
+    const setStartDate = (date: any) => {
+        if (date) {
+            const formattedDate = dayjs(date).format('YYYY-MM-DD')
+            setStartDateRaw(formattedDate)
+        } else {
+            setStartDateRaw('')
+        }
+    }
+
+    const setEndDate = (date: any) => {
+        if (date) {
+            const formattedDate = dayjs(date).format('YYYY-MM-DD')
+            setEndDateRaw(formattedDate)
+        } else {
+            setEndDateRaw('')
+        }
+    }
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
@@ -47,7 +67,7 @@ export default function OperatorReport() {
 
     useEffect(() => {
         handleFilter()
-    }, [])
+    }, [handleFilter])
 
     const onSubmit = async (values: any) => {
         try {

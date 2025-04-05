@@ -28,9 +28,7 @@ const ModalAddOperator: React.FC<{
             login: '',
             password: '',
             branch_id: 0,
-            admin_id: 0,
-            town_id: 0,
-            shift_id: 0
+            admin_id: 0
         }
     })
 
@@ -168,62 +166,6 @@ const ModalAddOperator: React.FC<{
                                             {admins?.map((a: any, index: number) => (
                                                 <SelectItem key={index + a.id} value={a.id.toString()}>
                                                     {a.login}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='town_id'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Город</FormLabel>
-                                    <Select
-                                        onValueChange={value => field.onChange(Number.parseInt(value))}
-                                        value={field.value ? field.value.toString() : undefined}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder='Выберите админ' />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {town?.map((a: any, index: number) => (
-                                                <SelectItem key={index + a.id} value={a.id.toString()}>
-                                                    {a.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='shift_id'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Смена</FormLabel>
-                                    <Select
-                                        onValueChange={value => field.onChange(Number.parseInt(value))}
-                                        value={field.value ? field.value.toString() : undefined}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder='Выберите админ' />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {shift?.map((a: any, index: number) => (
-                                                <SelectItem key={index + a.id} value={a.id.toString()}>
-                                                    {a.description}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
