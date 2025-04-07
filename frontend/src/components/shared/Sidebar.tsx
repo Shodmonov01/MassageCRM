@@ -33,6 +33,7 @@ export function Sidebar({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boole
     const logout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('role')
+        localStorage.removeItem('id')
         navigate('/login')
     }
 

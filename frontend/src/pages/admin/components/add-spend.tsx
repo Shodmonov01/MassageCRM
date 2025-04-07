@@ -1,5 +1,4 @@
 import type React from 'react'
-import { useEffect, useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 
@@ -25,13 +24,11 @@ const ModalAddSpend: React.FC<{
 }> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
     const form = useForm({
         defaultValues: {
-            login: '',
-            password: '',
-            branch_id: 0,
             admin_id: 0,
             town_id: 0,
             operator_id: 0,
-            cost: 0,
+            worker_id: 0,
+            cost: '',
             category: ''
         }
     })
@@ -67,23 +64,11 @@ const ModalAddSpend: React.FC<{
         }
     )
 
-    useEffect(() => {
-        if (selectedOperator) {
-            const brandId = branches?.find(b => b.name === selectedOperator.branch_name)?.id
-
-            form.reset({
-                login: selectedOperator.login,
-                branch_id: brandId,
-                password: ''
-            })
-        }
-    }, [selectedOperator])
-
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Добавить оператор</DialogTitle>
+                    <DialogTitle>Добавить расходы</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -93,10 +78,10 @@ const ModalAddSpend: React.FC<{
                             rules={{ required: 'Пароль обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Cost</FormLabel>
+                                    <FormLabel>Расход</FormLabel>
 
                                     <FormControl>
-                                        <Input {...field} placeholder={''} />
+                                        <Input {...field} placeholder={'расход'} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -123,10 +108,10 @@ const ModalAddSpend: React.FC<{
 
                         <FormField
                             control={form.control}
-                            name='branch_id'
+                            name='worker_id'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Филиал</FormLabel>
+                                    <FormLabel>Работник</FormLabel>
                                     <Select
                                         onValueChange={value => field.onChange(Number.parseInt(value))}
                                         value={field.value ? field.value.toString() : undefined}

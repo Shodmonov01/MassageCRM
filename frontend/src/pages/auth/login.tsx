@@ -41,9 +41,11 @@ const Login = () => {
             const res = await api.post('all-login', values)
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('role', res.data.result.role)
+            localStorage.setItem('id', res.data.result.id)
             // if (res.data.result.role === 'admin') navigate('/home')
             // if (res.data.result.role === 'super_admin') navigate('/accessControl')
             // if (res.data.result.role === 'operator') navigate('/apartmentCalculation')
+
             navigate('/')
         } catch (error) {
             console.log(error)

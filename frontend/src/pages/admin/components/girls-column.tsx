@@ -24,12 +24,12 @@ export const getColumns = () => {
                     return <Sort title='Имя' column={column} />
                 }
             },
-            {
-                accessorKey: 'worker_name',
-                header: ({ column }: { column: any }) => {
-                    return <Sort title='Telegram' column={column} />
-                }
-            },
+            // {
+            //     accessorKey: 'worker_name',
+            //     header: ({ column }: { column: any }) => {
+            //         return <Sort title='Telegram' column={column} />
+            //     }
+            // },
             {
                 accessorKey: 'role',
                 header: ({ column }: { column: any }) => {

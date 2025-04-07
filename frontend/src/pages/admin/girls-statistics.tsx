@@ -36,6 +36,7 @@ export default function GirlsStatistics() {
 
         handleFilter()
     }, [startDate, endDate])
+    console.log('filtered', filtered)
 
     const table = useReactTable({
         data: filtered as any,

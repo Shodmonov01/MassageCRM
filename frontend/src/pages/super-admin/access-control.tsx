@@ -10,7 +10,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ModalOperator from './components/operator-modal'
 import { getColumns } from './components/access-column'
-import ModalAddOperator from './components/add-operator'
+import ModalAddOperator from '../../components/shared/add-operator'
 import CommonTable from '@/components/shared/table-common'
 
 export default function OperatorsPage() {

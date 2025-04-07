@@ -38,7 +38,7 @@ export const getColumns = () => {
                 header: ({ column }) => <Sort title='5%' column={column} />
             },
             {
-                accessorKey: 'total_amount',
+                accessorKey: 'result',
                 header: ({ column }) => <Sort title='Итог' column={column} />,
                 cell: ({ row }) => `${row.original.total_amount} ₽`
             }

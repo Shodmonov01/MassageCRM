@@ -8,26 +8,39 @@ import { TypeOperator } from '@/type/type'
 import { Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import Modal from './components/modal'
 import CommonTable from '@/components/shared/table-common'
 import { getColumns } from './components/home-column'
-import ModalAddOperator from './components/add-operator'
+import { useNavigate } from 'react-router-dom'
+import ModalAddOperator from '@/components/shared/add-operator'
 
 export default function Home() {
     const queryClient = useQueryClient()
+    const navigate = useNavigate()
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [iSLoading, setISLoading] = useState(false)
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
-    const {
-        data: operators,
-        isLoading,
-        error
-    } = useQuery(['operators'], async () => {
-        const response = await api.get('admin/control')
-        return response.data
-    })
+    const id = localStorage.getItem('id')
+
+    const { data: operators, isLoading } = useQuery(
+        ['operators'],
+        async () => {
+            const response = await api.get('admin/control')
+
+            return response.data
+        },
+        {
+            onError: (error: any) => {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('role')
+                    localStorage.removeItem('id')
+                    navigate('/login')
+                }
+            }
+        }
+    )
 
     const columns = getColumns()
 
@@ -66,10 +79,12 @@ export default function Home() {
 
             console.log(values)
             await api.post('/admin/add-operator', {
+                admin_id: Number(id),
                 branch_id: values.branch_id,
-                admin_id: values.admin_id,
+                town_id: values.town_id,
                 login: values.login,
-                password: values.password
+                password: values.password,
+                shifts: [values.shift_id]
             })
             queryClient.invalidateQueries(['operators'])
         } catch (error) {
