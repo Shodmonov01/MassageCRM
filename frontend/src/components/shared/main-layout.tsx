@@ -27,7 +27,7 @@ const MainLayout = () => {
     }, [token])
 
     return (
-        <div className='flex h-screen bg-gray-100'>
+        <div className='flex min-h-screen h-full bg-gray-100'>
             <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
             <main className={`flex-1 p-8 transition-all duration-300 ${isSidebarOpen ? 'ml-2' : 'ml-2'}`}>

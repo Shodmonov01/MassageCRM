@@ -33,7 +33,7 @@ export default function Archive() {
             setIsLoading(true)
             try {
                 if (startDate && endDate) {
-                    const res = await api.get(`/admin/archive?from=${startDate}&to=${endDate}`)
+                    const res = await api.get(`/admin/archive?from=${startDate}:00&to=${endDate}:00`)
 
                     setFiltered(res.data)
                 }

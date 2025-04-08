@@ -1,14 +1,13 @@
 import type React from 'react'
 import { useEffect, useState } from 'react'
 
+import { useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 
-import { useQuery } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
 
 import api from '@/api/Api'
 import type { TypeBranch } from '@/type/type'
-
-import { Loader2 } from 'lucide-react'
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -24,6 +23,12 @@ const ModalAddOperator: React.FC<{
     iSLoading: boolean
 }> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
     const role = localStorage.getItem('role')
+
+    const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+
+    useEffect(() => {
+        if (role === 'super_admin') setIsSuperAdmin(true)
+    }, [role])
 
     const form = useForm({
         defaultValues: {
@@ -48,7 +53,7 @@ const ModalAddOperator: React.FC<{
             return response.data
         },
         {
-            enabled: role === 'super-admin'
+            enabled: isSuperAdmin
         }
     )
 
@@ -157,7 +162,7 @@ const ModalAddOperator: React.FC<{
                             )}
                         />
 
-                        {role === 'super_admin' && (
+                        {isSuperAdmin && (
                             <FormField
                                 control={form.control}
                                 name='admin_id'

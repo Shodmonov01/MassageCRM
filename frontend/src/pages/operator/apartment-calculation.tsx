@@ -1,34 +1,26 @@
 import { useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
 import api from '@/api/Api'
-import { TypeBranch, TypeOperator } from '@/type/type'
+import { TypeBranch } from '@/type/type'
 
-import { Plus } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import CommonTable from '@/components/shared/table-common'
 import { getColumns } from './components/apartment-column'
+import CommonTable from '@/components/shared/table-common'
 
 export default function OperatorsPage() {
-    const queryClient = useQueryClient()
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-    const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [entityType, setEntityType] = useState<'branch' | 'town'>('branch')
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
-    const { data: branches, isLoading } = useQuery<TypeBranch[]>(['branches'], async () => {
-        const response = await api.get('/branch')
+    const { data: main, isLoading } = useQuery<TypeBranch[]>(['branches'], async () => {
+        const response = await api.get('/operator/main')
         return response.data
     })
 
     const columns = getColumns()
+    console.log('main', main)
 
     const table = useReactTable({
-        data: branches as any,
+        data: main as any,
         columns,
         state: {
             sorting: sorting

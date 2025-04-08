@@ -16,11 +16,10 @@ import ModalAddSpend from './components/add-spend'
 
 export default function FinanceReport() {
     const queryClient = useQueryClient()
+    const id = localStorage.getItem('id')
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [entityType, setEntityType] = useState<'branch' | 'town'>('branch')
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
     const [startDate, setStartDateRaw] = useState<string>(
         dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD')
@@ -56,9 +55,18 @@ export default function FinanceReport() {
 
     const onSubmit = async (values: any) => {
         try {
-            await api.post('spend/create', values)
+            await api.post('spend/create', {
+                admin_id: Number(id),
+                worker_id: values.worker_id,
+                town_id: values.town_id,
+                operator_id: values.operator_id,
+                cost: Number(values.cost),
+                category: values.category
+            })
 
             setIsSubmitting(true)
+            queryClient.invalidateQueries(['spend'])
+            setIsCreateDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {

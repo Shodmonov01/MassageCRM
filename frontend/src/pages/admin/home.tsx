@@ -44,18 +44,6 @@ export default function Home() {
 
     const columns = getColumns()
 
-    const onSubmit = async (values: any) => {
-        try {
-            setISLoading(true)
-
-            const res = await api.put(`super-admin/update-operator/${selectedOperator?.id}`, values)
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setISLoading(false)
-        }
-    }
-
     const table = useReactTable({
         data: operators as any,
         columns,
@@ -87,6 +75,7 @@ export default function Home() {
                 shifts: [values.shift_id]
             })
             queryClient.invalidateQueries(['operators'])
+            setIsCreateDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {

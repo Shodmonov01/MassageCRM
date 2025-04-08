@@ -13,11 +13,33 @@ import CommonTable from '@/components/shared/table-common'
 export default function OperatorStatistics() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
-    const [startDate, setStartDate] = useState<string>(dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD'))
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
-    const [endDate, setEndDate] = useState<string>(dayjs().endOf('day').format('YYYY-MM-DD'))
+
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
+
+    const [startDate, setStartDateRaw] = useState<string>(
+        dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD')
+    )
+    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').format('YYYY-MM-DD'))
+
+    const setStartDate = (date: any) => {
+        if (date) {
+            const formattedDate = dayjs(date).format('YYYY-MM-DD')
+            setStartDateRaw(formattedDate)
+        } else {
+            setStartDateRaw('')
+        }
+    }
+
+    const setEndDate = (date: any) => {
+        if (date) {
+            const formattedDate = dayjs(date).format('YYYY-MM-DD')
+            setEndDateRaw(formattedDate)
+        } else {
+            setEndDateRaw('')
+        }
+    }
 
     const handleEdit = (operator: TypeOperator) => {
         setSelectedOperator(operator)

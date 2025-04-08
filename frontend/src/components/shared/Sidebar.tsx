@@ -38,7 +38,7 @@ export function Sidebar({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boole
     }
 
     return (
-        <div className={`bg-white h-full p-4 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
+        <div className={`bg-white  p-4 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
             <div className='flex justify-between items-center mb-6'>
                 <h2 className={`text-xl font-bold ${isSidebarOpen ? '' : 'hidden'}`}>Dashboard</h2>
                 <Button variant='ghost' size='icon' onClick={toggleSidebar}>

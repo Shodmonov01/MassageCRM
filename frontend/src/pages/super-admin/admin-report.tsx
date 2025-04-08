@@ -84,6 +84,7 @@ export default function AdminReport() {
             })
             queryClient.invalidateQueries(['admins'])
             await handleFilter()
+            setIsCreateDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {

@@ -42,9 +42,6 @@ const Login = () => {
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('role', res.data.result.role)
             localStorage.setItem('id', res.data.result.id)
-            // if (res.data.result.role === 'admin') navigate('/home')
-            // if (res.data.result.role === 'super_admin') navigate('/accessControl')
-            // if (res.data.result.role === 'operator') navigate('/apartmentCalculation')
 
             navigate('/')
         } catch (error) {
@@ -54,8 +51,8 @@ const Login = () => {
 
     return (
         <div className='h-screen py-24 flex justify-center'>
-            <div>
-                <div className='flex xl:w-[450px] shadow-lg border-2 border-gray-100 rounded-xl justify-center flex-col items-center p-10 gap-12 '>
+            <div className='xl:w-auto w-full px-10'>
+                <div className='flex xl:w-[450px] w-full shadow-lg border-2 border-gray-100 rounded-xl justify-center flex-col items-center xl:p-10 p-4 gap-12 '>
                     <p className='text-[32px]'>Вход</p>
                     <div className='w-full'>
                         <Form {...form}>

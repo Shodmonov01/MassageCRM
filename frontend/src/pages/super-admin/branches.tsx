@@ -63,6 +63,7 @@ export default function OperatorsPage() {
             }
 
             queryClient.invalidateQueries(['branches'])
+            setIsDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {

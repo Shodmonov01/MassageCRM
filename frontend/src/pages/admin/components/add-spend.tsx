@@ -33,11 +33,6 @@ const ModalAddSpend: React.FC<{
         }
     })
 
-    const { data: branches } = useQuery<TypeBranch[]>(['branches'], async () => {
-        const response = await api.get('/branch')
-        return response.data
-    })
-
     const { data: town } = useQuery<TypeBranch[]>(
         ['town'],
         async () => {
@@ -51,10 +46,10 @@ const ModalAddSpend: React.FC<{
         }
     )
 
-    const { data: shift } = useQuery<TypeBranch[]>(
-        ['shift'],
+    const { data: operator } = useQuery<TypeBranch[]>(
+        ['operator'],
         async () => {
-            const response = await api.get('/shift')
+            const response = await api.get('/super-admin/operator')
             return response.data
         },
         {
@@ -63,6 +58,11 @@ const ModalAddSpend: React.FC<{
             refetchOnWindowFocus: false
         }
     )
+
+    const { data: workers } = useQuery(['workers'], async () => {
+        const response = await api.get('/worker')
+        return response.data
+    })
 
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -81,7 +81,7 @@ const ModalAddSpend: React.FC<{
                                     <FormLabel>Расход</FormLabel>
 
                                     <FormControl>
-                                        <Input {...field} placeholder={'расход'} />
+                                        <Input type='number' {...field} placeholder={'расход'} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -122,9 +122,9 @@ const ModalAddSpend: React.FC<{
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {branches?.map((branch: any) => (
-                                                <SelectItem key={branch.id} value={branch.id.toString()}>
-                                                    {branch.name}
+                                            {workers?.map((W: any) => (
+                                                <SelectItem key={W.id} value={W.id.toString()}>
+                                                    {W.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -195,7 +195,7 @@ const ModalAddSpend: React.FC<{
                             name='operator_id'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Смена</FormLabel>
+                                    <FormLabel>Оператор</FormLabel>
                                     <Select
                                         onValueChange={value => field.onChange(Number.parseInt(value))}
                                         value={field.value ? field.value.toString() : undefined}
@@ -206,9 +206,9 @@ const ModalAddSpend: React.FC<{
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {shift?.map((a: any, index: number) => (
+                                            {operator?.map((a: any, index: number) => (
                                                 <SelectItem key={index + a.id} value={a.id.toString()}>
-                                                    {a.description}
+                                                    {a.login}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

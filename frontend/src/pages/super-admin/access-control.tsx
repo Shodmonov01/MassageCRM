@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 
+import { Plus } from 'lucide-react'
+
 import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
-
-import { Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import ModalOperator from './components/operator-modal'
@@ -15,16 +17,31 @@ import CommonTable from '@/components/shared/table-common'
 
 export default function OperatorsPage() {
     const queryClient = useQueryClient()
+    const navigate = useNavigate()
+
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
     const [iSLoading, setISLoading] = useState(false)
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
-    const { data: operators, isLoading } = useQuery(['operators'], async () => {
-        const response = await api.get('super-admin/operator')
-        return response.data
-    })
+    const { data: operators, isLoading } = useQuery(
+        ['operators'],
+        async () => {
+            const response = await api.get('super-admin/operator')
+            return response.data
+        },
+        {
+            onError: (error: any) => {
+                if (error.response.status === 401) {
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('role')
+                    localStorage.removeItem('id')
+                    navigate('/login')
+                }
+            }
+        }
+    )
 
     const handleEdit = (operator: TypeOperator) => {
         setSelectedOperator(operator)
@@ -44,6 +61,7 @@ export default function OperatorsPage() {
                 password: values.password
             })
             queryClient.invalidateQueries(['operators'])
+            setIsEditDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {
@@ -65,6 +83,7 @@ export default function OperatorsPage() {
                 shifts: [values.shift_id]
             })
             queryClient.invalidateQueries(['operators'])
+            setIsCreateDialogOpen(false)
         } catch (error) {
             console.error(error)
         } finally {
