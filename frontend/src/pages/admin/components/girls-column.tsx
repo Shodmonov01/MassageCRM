@@ -31,7 +31,7 @@ export const getColumns = () => {
             //     }
             // },
             {
-                accessorKey: 'role',
+                accessorKey: 'shift_count',
                 header: ({ column }: { column: any }) => {
                     return <Sort title='Количество смен' column={column} />
                 }
@@ -55,13 +55,13 @@ export const getColumns = () => {
                 }
             },
             {
-                accessorKey: 'worker_part',
+                accessorKey: 'income',
                 header: ({ column }: { column: any }) => {
                     return <Sort title='Доход' column={column} />
                 }
             },
             {
-                accessorKey: 'total_working_hours',
+                accessorKey: 'profit',
                 header: ({ column }: { column: any }) => {
                     return <Sort title='Прибыль' column={column} />
                 }

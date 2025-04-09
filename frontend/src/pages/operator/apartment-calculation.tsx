@@ -11,7 +11,7 @@ import CommonTable from '@/components/shared/table-common'
 export default function OperatorsPage() {
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
-    const { data: main, isLoading } = useQuery<TypeBranch[]>(['branches'], async () => {
+    const { data: main, isLoading } = useQuery<TypeBranch[]>(['main'], async () => {
         const response = await api.get('/operator/main')
         return response.data
     })

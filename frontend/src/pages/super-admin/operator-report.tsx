@@ -36,6 +36,7 @@ export default function OperatorReport() {
             setEndDateRaw('')
         }
     }
+
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
