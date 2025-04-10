@@ -26,12 +26,16 @@ export default function OperatorsPage() {
         return response.data
     })
 
-    const handleEdit = (operator: TypeOperator) => {
-        setSelectedOperator(operator)
-        setIsCreateDialogOpen(true)
+    const handleDelete = async (id: number) => {
+        try {
+            await api.delete(`/branch/delete/${id}`)
+            queryClient.invalidateQueries(['branches'])
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const columns = getColumns(handleEdit)
+    const columns = getColumns(handleDelete)
 
     const openCreateDialog = (type: 'branch' | 'town') => {
         setEntityType(type)
