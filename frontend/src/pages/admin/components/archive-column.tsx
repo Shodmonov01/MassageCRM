@@ -3,24 +3,35 @@ import { type ColumnDef } from '@tanstack/react-table'
 import Sort from '@/components/shared/sort'
 import { Button } from '@/components/ui/button'
 import { Edit } from 'lucide-react'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+dayjs.locale('ru')
 
 export const getColumns = (handleEdit: (operator: any) => void) => {
     return useMemo<ColumnDef<any>[]>(
         () => [
             {
-                accessorKey: 'admin_id',
+                accessorKey: 'id',
                 header: ({ column }) => <Sort title='ID' column={column} />
             },
             {
-                accessorKey: 'admin_name',
-                header: ({ column }) => <Sort title='Дата' column={column} />
+                accessorKey: 'month',
+                header: ({ column }) => <Sort title='Дата' column={column} />,
+                cell: ({ row }) => {
+                    const rawMonth = row.original.month
+                    const parsed = dayjs(rawMonth)
+
+                    const formatted = parsed.isValid() ? parsed.format('MMMM YYYY') : '—'
+
+                    return formatted.charAt(0).toUpperCase() + formatted.slice(1)
+                }
             },
             {
-                accessorKey: 'branch_name',
+                accessorKey: 'login',
                 header: ({ column }) => <Sort title='Имя' column={column} />
             },
             {
-                accessorKey: 'total_working_hours',
+                accessorKey: 'working_hours',
                 header: ({ column }) => <Sort title='Время за месяц (часы)' column={column} />
             },
             {
@@ -29,8 +40,12 @@ export const getColumns = (handleEdit: (operator: any) => void) => {
                 cell: ({ row }) => `${row.original.income} ₽`
             },
             {
-                accessorKey: 'salary',
-                header: ({ column }) => <Sort title='Статус' column={column} />
+                accessorKey: 'status',
+                header: ({ column }) => <Sort title='Статус' column={column} />,
+                cell: ({ row }) => {
+                    const status = row.original.status
+                    return status ? 'Не выплачен' : 'Выплачен'
+                }
             },
             {
                 id: 'actions',

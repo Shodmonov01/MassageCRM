@@ -6,8 +6,9 @@ import api from '@/api/Api'
 import Sort from '@/components/shared/sort'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useQueryClient } from '@tanstack/react-query'
+import { Button } from '@/components/ui/button'
 
-export const getColumns = () => {
+export const getColumns = ({ setOpenModal, setSelected }: { setOpenModal: any; setSelected: any }) => {
     const queryClient = useQueryClient()
     return useMemo<ColumnDef<any>[]>(
         () => [
@@ -20,17 +21,27 @@ export const getColumns = () => {
                 header: ({ column }) => <Sort title='Логин' column={column} />
             },
             {
+                id: 'time',
+                header: ({ column }) => <Sort title='Время' column={column} />,
+                cell: ({ row }) => {
+                    const start = row.original.start_time || '—'
+                    const end = row.original.end_time || '—'
+                    return (
+                        <div className='whitespace-nowrap'>
+                            {start} - {end}
+                        </div>
+                    )
+                }
+            },
+            {
                 accessorKey: 'cost',
                 header: ({ column }) => <Sort title='Сумма' column={column} />
             },
             {
-                accessorKey: 'worker_name',
+                accessorKey: 'login',
                 header: ({ column }) => <Sort title='Имя оператора' column={column} />
             },
-            {
-                accessorKey: 'branch_name',
-                header: ({ column }) => <Sort title='Филиал' column={column} />
-            },
+
             {
                 accessorKey: 'client_name',
                 header: ({ column }) => <Sort title='Имя клиента' column={column} />
@@ -39,7 +50,7 @@ export const getColumns = () => {
                 accessorKey: 'is_cancelled',
                 header: ({ column }) => <Sort title='Отмена' column={column} />,
                 cell: ({ row }) => {
-                    const id = row.original.id
+                    const id = row.original.offer_id
                     const isCancelled = row.original.is_cancelled
 
                     const handleCheckboxChange = async () => {
@@ -57,16 +68,36 @@ export const getColumns = () => {
                 }
             },
             {
-                accessorKey: 'operator_part',
-                header: ({ column }) => <Sort title='Доля оператора' column={column} />
+                accessorKey: 'prolongation',
+                header: ({ column }) => <Sort title='Продление' column={column} />,
+                cell: ({ row }) => {
+                    const p = row.original.prolongation
+
+                    return !p ? (
+                        <Button
+                            onClick={() => {
+                                setOpenModal(true), setSelected(row.original.id)
+                            }}
+                        >
+                            Продлить
+                        </Button>
+                    ) : (
+                        <Button>П</Button>
+                    )
+                }
             },
             {
-                accessorKey: 'start_time',
-                header: ({ column }) => <Sort title='Время начала' column={column} />
+                accessorKey: 'login',
+                header: ({ column }) => <Sort title='Поделить %' column={column} />,
+                cell: ({ row }) => {
+                    const w = row.original.login
+
+                    return <p>{w} 6%</p>
+                }
             },
             {
-                accessorKey: 'end_time',
-                header: ({ column }) => <Sort title='Время окончания' column={column} />
+                accessorKey: 'description',
+                header: ({ column }) => <Sort title='Комментарий' column={column} />
             }
         ],
         []
