@@ -28,37 +28,6 @@ const ModalAddSpend: React.FC<{
         }
     })
 
-    const { data: town } = useQuery<TypeBranch[]>(
-        ['town'],
-        async () => {
-            const response = await api.get('town')
-            return response.data
-        },
-        {
-            staleTime: 5 * 60 * 1000,
-            cacheTime: 10 * 60 * 1000,
-            refetchOnWindowFocus: false
-        }
-    )
-
-    const { data: operator } = useQuery<TypeBranch[]>(
-        ['operator'],
-        async () => {
-            const response = await api.get('/super-admin/operator')
-            return response.data
-        },
-        {
-            staleTime: 5 * 60 * 1000,
-            cacheTime: 10 * 60 * 1000,
-            refetchOnWindowFocus: false
-        }
-    )
-
-    const { data: workers } = useQuery(['workers'], async () => {
-        const response = await api.get('/worker')
-        return response.data
-    })
-
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
@@ -70,7 +39,7 @@ const ModalAddSpend: React.FC<{
                         <FormField
                             control={form.control}
                             name='prolongation'
-                            rules={{ required: 'Пароль обязателен' }}
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Продлить</FormLabel>

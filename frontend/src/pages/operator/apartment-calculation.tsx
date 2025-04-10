@@ -8,6 +8,8 @@ import { TypeBranch } from '@/type/type'
 import { getColumns } from './components/apartment-column'
 import CommonTable from '@/components/shared/table-common'
 import ModalAddSpend from './components/offer-modal'
+import { Button } from '@/components/ui/button'
+import ModalAddWorker from './components/add-worker'
 
 export default function OperatorsPage() {
     const queryClient = useQueryClient()
@@ -15,6 +17,8 @@ export default function OperatorsPage() {
     const [openModal, setOpenModal] = useState(false)
     const [iSLoading, setISLoading] = useState(false)
     const [selected, setSelected] = useState()
+    const [addModal, setAddModal] = useState(false)
+    const [addLoading, setAddLoading] = useState(false)
 
     const { data: main, isLoading } = useQuery<TypeBranch[]>(['main'], async () => {
         const response = await api.get('/operator/main')
@@ -56,8 +60,29 @@ export default function OperatorsPage() {
         }
     }
 
+    const onSubmitAdd = async (values: any) => {
+        try {
+            setAddLoading(true)
+
+            await api.post(`/worker/create`, {
+                ...values
+            })
+            queryClient.invalidateQueries(['main'])
+            queryClient.invalidateQueries(['workers'])
+            setAddModal(false)
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setAddLoading(false)
+        }
+    }
+
     return (
         <div className='w-full'>
+            <div>
+                <Button onClick={() => setAddModal(true)}>Добавить девушку</Button>
+            </div>
+
             <CommonTable table={table} columns={columns} isLoading={isLoading} />
 
             <ModalAddSpend
@@ -66,6 +91,12 @@ export default function OperatorsPage() {
                 onSubmit={onSubmit}
                 iSLoading={iSLoading}
                 selectedOperator={setSelected}
+            />
+            <ModalAddWorker
+                isCreateDialogOpen={addModal}
+                setIsCreateDialogOpen={setAddModal}
+                onSubmit={onSubmitAdd}
+                iSLoading={addLoading}
             />
         </div>
     )

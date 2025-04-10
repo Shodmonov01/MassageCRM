@@ -30,7 +30,10 @@ export default function CommonTable({ table, columns, isLoading }: { table: any;
             <TableBody>
                 {table.getRowModel().rows.length ? (
                     table.getRowModel().rows.map((row: any) => (
-                        <TableRow key={row.id}>
+                        <TableRow
+                            key={row.id}
+                            className={` ${row.original.is_cancelled === false && 'bg-[#38FF56] hover:!bg-[#38FF56]'} `}
+                        >
                             {row.getVisibleCells().map((cell: any) => (
                                 <TableCell key={cell.id}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
