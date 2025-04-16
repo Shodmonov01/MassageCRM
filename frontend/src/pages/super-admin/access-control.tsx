@@ -57,8 +57,7 @@ export default function OperatorsPage() {
             await api.put(`super-admin/update-operator/${selectedOperator?.id}`, {
                 branch_id: values.branch_id,
                 town_id: values.town_name,
-                login: values.login,
-                password: values.password
+                percent: values.percent
             })
             queryClient.invalidateQueries(['operators'])
             setIsEditDialogOpen(false)
@@ -80,7 +79,8 @@ export default function OperatorsPage() {
                 town_id: values.town_id,
                 login: values.login,
                 password: values.password,
-                shifts: [values.shift_id]
+                shifts: [values.shift_id],
+                percent: values.percent
             })
             queryClient.invalidateQueries(['operators'])
             setIsCreateDialogOpen(false)

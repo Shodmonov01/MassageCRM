@@ -72,7 +72,8 @@ export default function Home() {
                 town_id: values.town_id,
                 login: values.login,
                 password: values.password,
-                shifts: [values.shift_id]
+                shifts: [values.shift_id],
+                percent: values.percent
             })
             queryClient.invalidateQueries(['operators'])
             setIsCreateDialogOpen(false)

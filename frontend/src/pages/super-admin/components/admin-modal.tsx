@@ -25,10 +25,8 @@ const Modal: React.FC<{
 }> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
     const form = useForm({
         defaultValues: {
-            admin_name: '',
-            password: '',
-            branch_id: 0,
-            admin_id: 0
+            percent: '',
+            branch_id: 0
         }
     })
 
@@ -42,22 +40,31 @@ const Modal: React.FC<{
             const brandId = branches?.find(b => b.name === selectedOperator.branch_name)?.id
 
             form.reset({
-                admin_name: selectedOperator.admin_name,
+                // admin_name: selectedOperator.admin_name,
                 branch_id: brandId,
-                password: ''
+                percent: selectedOperator.percent || 7
             })
         }
     }, [selectedOperator])
+
+    useEffect(() => {
+        if (!isCreateDialogOpen) {
+            form.reset({
+                percent: '',
+                branch_id: 0
+            })
+        }
+    }, [isCreateDialogOpen, form])
 
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Редактировать оператора</DialogTitle>
+                    <DialogTitle>Редактировать</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name='admin_name'
                             render={({ field }) => (
@@ -86,11 +93,29 @@ const Modal: React.FC<{
                                     <FormMessage />
                                 </FormItem>
                             )}
+                        /> */}
+
+                        <FormField
+                            control={form.control}
+                            name='percent'
+                            rules={{ required: 'обязателен' }}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Процент</FormLabel>
+
+                                    <FormControl>
+                                        <Input type='number' {...field} placeholder={'Процент'} />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
 
                         <FormField
                             control={form.control}
                             name='branch_id'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Филиал</FormLabel>

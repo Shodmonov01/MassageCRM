@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useEffect } from 'react'
 
 const ModalAddSpend: React.FC<{
     isCreateDialogOpen: boolean
@@ -63,6 +64,19 @@ const ModalAddSpend: React.FC<{
         const response = await api.get('/worker')
         return response.data
     })
+
+    useEffect(() => {
+        if (!isCreateDialogOpen) {
+            form.reset({
+                admin_id: 0,
+                town_id: 0,
+                operator_id: 0,
+                worker_id: 0,
+                cost: '',
+                category: ''
+            })
+        }
+    }, [isCreateDialogOpen, form])
 
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

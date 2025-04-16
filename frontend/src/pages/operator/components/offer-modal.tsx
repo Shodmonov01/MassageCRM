@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useEffect } from 'react'
 
 const ModalAddSpend: React.FC<{
     isCreateDialogOpen: boolean
@@ -27,6 +28,14 @@ const ModalAddSpend: React.FC<{
             prolongation: ''
         }
     })
+
+    useEffect(() => {
+        if (!isCreateDialogOpen) {
+            form.reset({
+                prolongation: ''
+            })
+        }
+    }, [isCreateDialogOpen, form])
 
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

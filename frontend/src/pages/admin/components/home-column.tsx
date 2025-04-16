@@ -36,9 +36,8 @@ export const getColumns = () => {
                 cell: ({ row }) => `${row.original.operator_part} ₽`
             },
             {
-                accessorKey: 'five_percent',
-                header: ({ column }) => <Sort title='5%' column={column} />,
-                cell: () => '-' // Placeholder as in your current table
+                accessorKey: 'percent',
+                header: ({ column }) => <Sort title='5%' column={column} />
             },
             {
                 accessorKey: 'result',

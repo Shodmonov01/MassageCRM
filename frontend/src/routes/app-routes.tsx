@@ -14,6 +14,7 @@ import OperatorReport from '@/pages/super-admin/operator-report'
 import Branches from '@/pages/super-admin/branches'
 import ApartmentCalculation from '@/pages/operator/apartment-calculation'
 import Login from '@/pages/auth/login'
+import Calculation from '@/pages/operator/calculation'
 
 const AppRoutes = () => {
     return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
                 <Route element={<ProtectedRoute allowedRoles={['operator']} />}>
                     <Route index element={<Navigate to='/apartmentCalculation' replace />} />
                     <Route path='/apartmentCalculation' element={<ApartmentCalculation />} />
+                    <Route path='/calculation' element={<Calculation />} />
                 </Route>
             </Route>
             <Route path='/login' element={<Login />} />

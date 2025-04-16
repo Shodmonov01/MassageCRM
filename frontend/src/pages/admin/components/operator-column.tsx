@@ -34,7 +34,7 @@ export const getColumns = () => {
                 cell: ({ row }) => `${row.original.total_amount} ₽`
             },
             {
-                accessorKey: 'role',
+                accessorKey: 'percent',
                 header: ({ column }) => <Sort title='5%' column={column} />
             },
             {

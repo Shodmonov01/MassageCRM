@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { useForm } from 'react-hook-form'
 
@@ -25,10 +25,8 @@ const ModalOperator: React.FC<{
 }> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
     const form = useForm({
         defaultValues: {
-            login: '',
-            password: '',
             branch_id: 0,
-            admin_id: 0,
+            percent: 0,
             town_name: 0
         }
     })
@@ -66,48 +64,40 @@ const ModalOperator: React.FC<{
             const townId = town?.find(b => b.name === selectedOperator.town_name)?.id
 
             form.reset({
-                login: selectedOperator.login,
+                percent: selectedOperator.percent || 6,
                 branch_id: brandId,
-                password: '',
                 town_name: townId
             })
         }
     }, [selectedOperator])
 
+    useEffect(() => {
+        if (!isCreateDialogOpen) {
+            form.reset({
+                branch_id: 0,
+                percent: 0,
+                town_name: 0
+            })
+        }
+    }, [isCreateDialogOpen, form])
+
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Редактировать оператора</DialogTitle>
+                    <DialogTitle>Редактировать</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
                         <FormField
                             control={form.control}
-                            name='login'
+                            name='percent'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Логин</FormLabel>
+                                    <FormLabel>Процент</FormLabel>
                                     <FormControl>
-                                        <Input {...field} />
+                                        <Input {...field} type='number' placeholder='Процент' />
                                     </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='password'
-                            rules={{ required: 'Пароль обязателен' }}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Пароль</FormLabel>
-
-                                    <FormControl>
-                                        <Input type='password' {...field} placeholder={'Пароль оператора'} />
-                                    </FormControl>
-
                                     <FormMessage />
                                 </FormItem>
                             )}

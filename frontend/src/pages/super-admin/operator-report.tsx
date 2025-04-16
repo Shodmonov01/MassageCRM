@@ -14,15 +14,13 @@ import CommonTable from '@/components/shared/table-common'
 export default function OperatorReport() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
-    const [startDate, setStartDateRaw] = useState<string>(
-        dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD')
-    )
-    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').format('YYYY-MM-DD'))
+    const [startDate, setStartDateRaw] = useState<string>(dayjs().subtract(1, 'day').startOf('day').toISOString())
+    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').toISOString())
 
     const setStartDate = (date: any) => {
         if (date) {
             const formattedDate = dayjs(date).format('YYYY-MM-DD')
-            setStartDateRaw(formattedDate)
+            setStartDateRaw(date)
         } else {
             setStartDateRaw('')
         }
@@ -31,7 +29,7 @@ export default function OperatorReport() {
     const setEndDate = (date: any) => {
         if (date) {
             const formattedDate = dayjs(date).format('YYYY-MM-DD')
-            setEndDateRaw(formattedDate)
+            setEndDateRaw(date)
         } else {
             setEndDateRaw('')
         }
@@ -74,11 +72,10 @@ export default function OperatorReport() {
         try {
             setISLoading(true)
 
-            const res = await api.put(`/super-admin/update-operator/${selectedOperator?.id}`, {
+            await api.put(`/super-admin/update-operator/${selectedOperator?.id}`, {
                 branch_id: values.branch_id,
                 town_id: values.town_name,
-                login: values.login,
-                password: values.password
+                percent: values.percent
             })
             handleFilter()
             setIsCreateDialogOpen(false)

@@ -37,7 +37,8 @@ const ModalAddOperator: React.FC<{
             branch_id: 0,
             admin_id: 0,
             town_id: 0,
-            shift_id: 0
+            shift_id: 0,
+            percent: 0
         }
     })
 
@@ -95,6 +96,20 @@ const ModalAddOperator: React.FC<{
         }
     }, [selectedOperator])
 
+    useEffect(() => {
+        if (!isCreateDialogOpen) {
+            form.reset({
+                login: '',
+                password: '',
+                branch_id: 0,
+                admin_id: 0,
+                town_id: 0,
+                shift_id: 0,
+                percent: 0
+            })
+        }
+    }, [isCreateDialogOpen, form])
+
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
@@ -106,6 +121,7 @@ const ModalAddOperator: React.FC<{
                         <FormField
                             control={form.control}
                             name='login'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Логин</FormLabel>
@@ -119,8 +135,23 @@ const ModalAddOperator: React.FC<{
 
                         <FormField
                             control={form.control}
+                            name='percent'
+                            rules={{ required: 'обязателен' }}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Процент</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder='процент' />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
                             name='password'
-                            rules={{ required: 'Пароль обязателен' }}
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Пароль</FormLabel>
@@ -137,6 +168,7 @@ const ModalAddOperator: React.FC<{
                         <FormField
                             control={form.control}
                             name='branch_id'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Филиал</FormLabel>
@@ -166,6 +198,7 @@ const ModalAddOperator: React.FC<{
                             <FormField
                                 control={form.control}
                                 name='admin_id'
+                                rules={{ required: 'обязателен' }}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Админ</FormLabel>
@@ -195,6 +228,7 @@ const ModalAddOperator: React.FC<{
                         <FormField
                             control={form.control}
                             name='town_id'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Город</FormLabel>
@@ -223,6 +257,7 @@ const ModalAddOperator: React.FC<{
                         <FormField
                             control={form.control}
                             name='shift_id'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Смена</FormLabel>

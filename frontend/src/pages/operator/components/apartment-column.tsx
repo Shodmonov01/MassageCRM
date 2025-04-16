@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 
-export const getColumns = ({ setOpenModal, setSelected }: { setOpenModal: any; setSelected: any }) => {
+export const getColumns = ({ setOpenModal, setSelected, handleEdit }: any) => {
     const queryClient = useQueryClient()
     return useMemo<ColumnDef<any>[]>(
         () => [
@@ -98,8 +98,23 @@ export const getColumns = ({ setOpenModal, setSelected }: { setOpenModal: any; s
             {
                 accessorKey: 'description',
                 header: ({ column }) => <Sort title='Комментарий' column={column} />
+            },
+            {
+                id: 'actions',
+                cell: ({ row }: { row: any }) => {
+                    const offer_id = row.original.offer_id
+                    return (
+                        <div className='text-center'>
+                            <Button onClick={() => handleEdit(offer_id)}>
+                                Комментарий
+                                {/* <Edit className='h-4 w-4' /> */}
+                            </Button>
+                        </div>
+                    )
+                },
+                header: () => <div className='text-center'>Действия</div>
             }
         ],
-        []
+        [handleEdit]
     )
 }

@@ -64,6 +64,15 @@ export default function CreateEntityDialog({
         form.reset()
     }
 
+    useEffect(() => {
+        if (!isOpen) {
+            form.reset({
+                name: '',
+                ...(entityType === 'town' && { branch_id: '' })
+            })
+        }
+    }, [isOpen, form])
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className='sm:max-w-[425px]'>

@@ -49,7 +49,7 @@ export const getColumns = (handleEdit: (operator: TypeOperator) => void) => {
                 }
             },
             {
-                accessorKey: 'role',
+                accessorKey: 'percent',
                 header: ({ column }: { column: any }) => {
                     return <Sort title='5%' column={column} />
                 }

@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useEffect } from 'react'
 
 const ModalAddWorker: React.FC<{
     isCreateDialogOpen: boolean
@@ -26,7 +27,8 @@ const ModalAddWorker: React.FC<{
             branch_id: 0,
             town_id: 0,
             operator_id: 0,
-            name: ''
+            name: '',
+            percent: 0
         }
     })
 
@@ -61,6 +63,18 @@ const ModalAddWorker: React.FC<{
         return response.data
     })
 
+    useEffect(() => {
+        if (!isCreateDialogOpen) {
+            form.reset({
+                branch_id: 0,
+                town_id: 0,
+                operator_id: 0,
+                name: '',
+                percent: 0
+            })
+        }
+    }, [isCreateDialogOpen, form])
+
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
@@ -79,6 +93,22 @@ const ModalAddWorker: React.FC<{
 
                                     <FormControl>
                                         <Input {...field} placeholder={'Имя'} />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='percent'
+                            rules={{ required: 'Пароль обязателен' }}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Процент</FormLabel>
+
+                                    <FormControl>
+                                        <Input type='number' {...field} placeholder={'Процент'} />
                                     </FormControl>
 
                                     <FormMessage />

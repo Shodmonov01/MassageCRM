@@ -22,7 +22,10 @@ const menuItems = {
         { path: '/operatorReport', label: 'Отчет оператора', icon: <FileText /> },
         { path: '/branches', label: 'Филиал и ветки', icon: <Building2 /> }
     ],
-    operator: [{ path: '/apartmentCalculation', label: 'Расчет кв.', icon: <Calculator /> }]
+    operator: [
+        { path: '/apartmentCalculation', label: 'Кабинет оператора', icon: <Calculator /> },
+        { path: '/calculation', label: 'Расчет кв.', icon: <Calculator /> }
+    ]
 }
 
 export function Sidebar({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boolean; toggleSidebar: () => void }) {

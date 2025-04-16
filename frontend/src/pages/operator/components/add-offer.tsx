@@ -1,97 +1,87 @@
 import type React from 'react'
-import { useEffect, useState } from 'react'
-
-import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
-
-import api from '@/api/Api'
-import type { TypeBranch } from '@/type/type'
+import { useForm } from 'react-hook-form'
 
 import { Loader2 } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import api from '@/api/Api'
+
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
-const Modal: React.FC<{
+const ModalAddSpend: React.FC<{
     isCreateDialogOpen: boolean
     setIsCreateDialogOpen: (isOpen: boolean) => void
-    selectedOperator: any | null
+    selectedOperator?: any | null
     onSubmit: (values: any) => void
     iSLoading: boolean
 }> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
     const form = useForm({
         defaultValues: {
-            login: '',
-            password: '',
-            branch_id: 0,
-            admin_id: 0
+            start_time: '',
+            end_time: '',
+            cost: 0,
+            admin_id: 0,
+            worker_id: 0,
+            town_id: 0,
+            operator_id: 0,
+            client_name: '',
+            description: ''
         }
     })
-
-    const { data: branches } = useQuery<TypeBranch[]>(['branches'], async () => {
-        const response = await api.get('/branch')
-        return response.data
-    })
-
-    useEffect(() => {
-        if (selectedOperator) {
-            const brandId = branches?.find(b => b.name === selectedOperator.branch_name)?.id
-
-            form.reset({
-                login: selectedOperator.login,
-                branch_id: brandId,
-                password: ''
-            })
-        }
-    }, [selectedOperator])
 
     useEffect(() => {
         if (!isCreateDialogOpen) {
             form.reset({
-                login: '',
-                password: '',
-                branch_id: 0,
-                admin_id: 0
+                start_time: '',
+                end_time: '',
+                cost: 0,
+                admin_id: 0,
+                worker_id: 0,
+                town_id: 0,
+                operator_id: 0,
+                client_name: '',
+                description: ''
             })
         }
     }, [isCreateDialogOpen, form])
+
+    const { data: town } = useQuery(
+        ['town'],
+        async () => {
+            const response = await api.get('town')
+            return response.data
+        },
+        {
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false
+        }
+    )
 
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Редактировать оператора</DialogTitle>
+                    <DialogTitle>Добавить</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
                         <FormField
                             control={form.control}
-                            name='login'
+                            name='start_time'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Логин</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='password'
-                            rules={{ required: 'Пароль обязателен' }}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Пароль</FormLabel>
+                                    <FormLabel>Продлить</FormLabel>
 
                                     <FormControl>
-                                        <Input type='password' {...field} placeholder={'Пароль оператора'} />
+                                        <Input type='time' {...field} placeholder={'продлить'} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -101,23 +91,40 @@ const Modal: React.FC<{
 
                         <FormField
                             control={form.control}
-                            name='branch_id'
+                            name='end_time'
+                            rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Филиал</FormLabel>
+                                    <FormLabel>Продлить</FormLabel>
+
+                                    <FormControl>
+                                        <Input type='time' {...field} placeholder={'продлить'} />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name='town_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Город</FormLabel>
                                     <Select
                                         onValueChange={value => field.onChange(Number.parseInt(value))}
                                         value={field.value ? field.value.toString() : undefined}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder='Выберите филиал' />
+                                                <SelectValue placeholder='Выберите админ' />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {branches?.map((branch: any) => (
-                                                <SelectItem key={branch.id} value={branch.id.toString()}>
-                                                    {branch.name}
+                                            {town?.map((a: any, index: number) => (
+                                                <SelectItem key={index + a.id} value={a.id.toString()}>
+                                                    {a.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -150,4 +157,4 @@ const Modal: React.FC<{
     )
 }
 
-export default Modal
+export default ModalAddSpend

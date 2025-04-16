@@ -7,23 +7,18 @@ import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
 
 import FilterDate from '@/components/shared/filter-date'
-import { getColumns } from './components/operator-column'
 import CommonTable from '@/components/shared/table-common'
+import { getColumns } from './components/calculation-column'
 
-export default function OperatorStatistics() {
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-    const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
+export default function Calculation() {
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
-
     const [filtered, setFiltered] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
-
     const [startDate, setStartDateRaw] = useState<string>(dayjs().subtract(1, 'day').startOf('day').toISOString())
     const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').toISOString())
 
     const setStartDate = (date: any) => {
         if (date) {
-            const formattedDate = dayjs(date).format('YYYY-MM-DD')
             setStartDateRaw(date)
         } else {
             setStartDateRaw('')
@@ -32,16 +27,10 @@ export default function OperatorStatistics() {
 
     const setEndDate = (date: any) => {
         if (date) {
-            const formattedDate = dayjs(date).format('YYYY-MM-DD')
             setEndDateRaw(date)
         } else {
             setEndDateRaw('')
         }
-    }
-
-    const handleEdit = (operator: TypeOperator) => {
-        setSelectedOperator(operator)
-        setIsCreateDialogOpen(true)
     }
 
     const columns = getColumns()
@@ -51,7 +40,7 @@ export default function OperatorStatistics() {
             setIsLoading(true)
             try {
                 if (startDate && endDate) {
-                    const res = await api.post(`/admin/operator-filter`, {
+                    const res = await api.post(`/operator/flat`, {
                         from: startDate,
                         to: endDate
                     })

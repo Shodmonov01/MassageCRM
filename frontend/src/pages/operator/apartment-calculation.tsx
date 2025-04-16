@@ -10,6 +10,7 @@ import CommonTable from '@/components/shared/table-common'
 import ModalAddSpend from './components/offer-modal'
 import { Button } from '@/components/ui/button'
 import ModalAddWorker from './components/add-worker'
+import ModalComment from './components/comment-modal'
 
 export default function OperatorsPage() {
     const queryClient = useQueryClient()
@@ -19,14 +20,20 @@ export default function OperatorsPage() {
     const [selected, setSelected] = useState()
     const [addModal, setAddModal] = useState(false)
     const [addLoading, setAddLoading] = useState(false)
+    const [offerId, setOfferId] = useState<number | null>(null)
+    const [openComment, setOpenComment] = useState<boolean>(false)
 
     const { data: main, isLoading } = useQuery<TypeBranch[]>(['main'], async () => {
         const response = await api.get('/operator/main')
         return response.data
     })
 
-    const columns = getColumns({ setOpenModal, setSelected })
-    console.log('main', main)
+    const handleEdit = (id: number) => {
+        setOfferId(id)
+        setOpenComment(true)
+    }
+
+    const columns = getColumns({ setOpenModal, setSelected, handleEdit })
 
     const table = useReactTable({
         data: main as any,
@@ -44,6 +51,22 @@ export default function OperatorsPage() {
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel()
     })
+
+    const onSubmitComment = async (values: any) => {
+        try {
+            console.log('val', values)
+
+            await api.post(`offer/create-file/${offerId}`, values, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            queryClient.invalidateQueries(['main'])
+            setOpenComment(false)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const onSubmit = async (values: any) => {
         try {
@@ -79,8 +102,9 @@ export default function OperatorsPage() {
 
     return (
         <div className='w-full'>
-            <div>
+            <div className='flex gap-3 items-center'>
                 <Button onClick={() => setAddModal(true)}>Добавить девушку</Button>
+                <Button onClick={() => setAddModal(true)}>Добавить предложение</Button>
             </div>
 
             <CommonTable table={table} columns={columns} isLoading={isLoading} />
@@ -97,6 +121,12 @@ export default function OperatorsPage() {
                 setIsCreateDialogOpen={setAddModal}
                 onSubmit={onSubmitAdd}
                 iSLoading={addLoading}
+            />
+
+            <ModalComment
+                isCreateDialogOpen={openComment}
+                setIsCreateDialogOpen={setOpenComment}
+                onSubmit={onSubmitComment}
             />
         </div>
     )

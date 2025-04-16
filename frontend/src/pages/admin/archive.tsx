@@ -14,7 +14,7 @@ import { getColumns } from './components/archive-column'
 export default function Archive() {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [selectedOperator, setSelectedOperator] = useState<TypeOperator | null>(null)
-    const [startDate, setStartDate] = useState<string>(dayjs().hour(12).minute(0).format('HH:mm'))
+    const [startDate, setStartDate] = useState<string>(dayjs().hour(9).minute(0).format('HH:mm'))
     const [endDate, setEndDate] = useState<string>(dayjs().hour(20).minute(0).format('HH:mm'))
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
     const [filtered, setFiltered] = useState<any[]>([])

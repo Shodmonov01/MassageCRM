@@ -46,12 +46,7 @@ export default function FinanceReport() {
     const [iSLoading, setISLoading] = useState(false)
     const [filtered, setFiltered] = useState<any[]>([])
 
-    const handleEdit = (operator: TypeOperator) => {
-        setSelectedOperator(operator)
-        setIsCreateDialogOpen(true)
-    }
-
-    const columns = getColumns(handleEdit)
+    const columns = getColumns()
 
     const onSubmit = async (values: any) => {
         try {
@@ -67,6 +62,7 @@ export default function FinanceReport() {
             setIsSubmitting(true)
             queryClient.invalidateQueries(['spend'])
             setIsCreateDialogOpen(false)
+            await handleFilter()
         } catch (error) {
             console.error(error)
         } finally {

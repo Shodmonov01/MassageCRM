@@ -78,9 +78,8 @@ export default function AdminReport() {
             setISLoading(true)
 
             await api.put(`super-admin/update-admin/${selectedOperator?.admin_id}`, {
-                login: values.admin_name,
-                password: values.password,
-                branch_id: values.branch_id
+                branch_id: values.branch_id,
+                percent: values.percent
             })
             queryClient.invalidateQueries(['admins'])
             await handleFilter()
