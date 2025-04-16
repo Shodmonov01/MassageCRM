@@ -14,13 +14,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-const ModalAddSpend: React.FC<{
+const ModalAddOffer: React.FC<{
     isCreateDialogOpen: boolean
     setIsCreateDialogOpen: (isOpen: boolean) => void
-    selectedOperator?: any | null
     onSubmit: (values: any) => void
     iSLoading: boolean
-}> = ({ isCreateDialogOpen, setIsCreateDialogOpen, selectedOperator, onSubmit, iSLoading }) => {
+}> = ({ isCreateDialogOpen, setIsCreateDialogOpen, onSubmit, iSLoading }) => {
     const form = useForm({
         defaultValues: {
             start_time: '',
@@ -64,9 +63,37 @@ const ModalAddSpend: React.FC<{
         }
     )
 
+    const { data: operator } = useQuery(
+        ['operator'],
+        async () => {
+            const response = await api.get('/super-admin/operator')
+            return response.data
+        },
+        {
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false
+        }
+    )
+
+    const { data: workers } = useQuery(['workers'], async () => {
+        const response = await api.get('/worker')
+        return response.data
+    })
+
+    const { data: branches } = useQuery(['branches'], async () => {
+        const response = await api.get('/branch')
+        return response.data
+    })
+
+    const { data: admins } = useQuery(['admins'], async () => {
+        const response = await api.get('/super-admin/all-admin')
+        return response.data
+    })
+
     return (
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogContent className='sm:max-w-[425px]'>
+            <DialogContent className='sm:max-w-[425px] max-h-[700px] overflow-y-auto'>
                 <DialogHeader>
                     <DialogTitle>Добавить</DialogTitle>
                 </DialogHeader>
@@ -74,14 +101,42 @@ const ModalAddSpend: React.FC<{
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
                         <FormField
                             control={form.control}
+                            name='client_name'
+                            rules={{ required: 'обязателен' }}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Имя клиента</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder='Введите имя клиента' />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name='description'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Описание</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder='Описание' />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
                             name='start_time'
                             rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Продлить</FormLabel>
+                                    <FormLabel>Время начала</FormLabel>
 
                                     <FormControl>
-                                        <Input type='time' {...field} placeholder={'продлить'} />
+                                        <Input type='time' {...field} placeholder={'Время начала'} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -95,10 +150,27 @@ const ModalAddSpend: React.FC<{
                             rules={{ required: 'обязателен' }}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Продлить</FormLabel>
+                                    <FormLabel>Время окончания</FormLabel>
 
                                     <FormControl>
-                                        <Input type='time' {...field} placeholder={'продлить'} />
+                                        <Input type='time' {...field} placeholder={'Время окончания'} />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name='cost'
+                            rules={{ required: 'обязателен' }}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Стоимость</FormLabel>
+
+                                    <FormControl>
+                                        <Input type='number' {...field} placeholder={'Стоимость'} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -118,13 +190,96 @@ const ModalAddSpend: React.FC<{
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder='Выберите админ' />
+                                                <SelectValue placeholder='Выберите' />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             {town?.map((a: any, index: number) => (
                                                 <SelectItem key={index + a.id} value={a.id.toString()}>
                                                     {a.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name='admin_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Админ</FormLabel>
+                                    <Select
+                                        onValueChange={value => field.onChange(Number.parseInt(value))}
+                                        value={field.value ? field.value.toString() : undefined}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Выберите' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {admins?.map((a: any, index: number) => (
+                                                <SelectItem key={index + a.id} value={a.id.toString()}>
+                                                    {a.login}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='worker_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Работник</FormLabel>
+                                    <Select
+                                        onValueChange={value => field.onChange(Number.parseInt(value))}
+                                        value={field.value ? field.value.toString() : undefined}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Выберите' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {workers?.map((a: any, index: number) => (
+                                                <SelectItem key={index + a.id} value={a.id.toString()}>
+                                                    {a.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name='operator_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Оператор</FormLabel>
+                                    <Select
+                                        onValueChange={value => field.onChange(Number.parseInt(value))}
+                                        value={field.value ? field.value.toString() : undefined}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Выберите' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {operator?.map((a: any, index: number) => (
+                                                <SelectItem key={index + a.id} value={a.id.toString()}>
+                                                    {a.login}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -143,8 +298,6 @@ const ModalAddSpend: React.FC<{
                                     <>
                                         <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                                     </>
-                                ) : selectedOperator ? (
-                                    'Сохранить'
                                 ) : (
                                     'Создать'
                                 )}
@@ -157,4 +310,4 @@ const ModalAddSpend: React.FC<{
     )
 }
 
-export default ModalAddSpend
+export default ModalAddOffer

@@ -11,6 +11,7 @@ import ModalAddSpend from './components/offer-modal'
 import { Button } from '@/components/ui/button'
 import ModalAddWorker from './components/add-worker'
 import ModalComment from './components/comment-modal'
+import ModalAddOffer from './components/add-offer'
 
 export default function OperatorsPage() {
     const queryClient = useQueryClient()
@@ -22,6 +23,8 @@ export default function OperatorsPage() {
     const [addLoading, setAddLoading] = useState(false)
     const [offerId, setOfferId] = useState<number | null>(null)
     const [openComment, setOpenComment] = useState<boolean>(false)
+    const [openOffer, setOpenOffer] = useState<boolean>(false)
+    const [addLoadingOffer, setAddLoadingOffer] = useState<boolean>(false)
 
     const { data: main, isLoading } = useQuery<TypeBranch[]>(['main'], async () => {
         const response = await api.get('/operator/main')
@@ -54,8 +57,6 @@ export default function OperatorsPage() {
 
     const onSubmitComment = async (values: any) => {
         try {
-            console.log('val', values)
-
             await api.post(`offer/create-file/${offerId}`, values, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -68,10 +69,23 @@ export default function OperatorsPage() {
         }
     }
 
+    const onSubmitOffer = async (values: any) => {
+        try {
+            setAddLoadingOffer(true)
+
+            await api.post(`/offer/create`, { ...values })
+            queryClient.invalidateQueries(['main'])
+            setOpenOffer(false)
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setAddLoadingOffer(false)
+        }
+    }
+
     const onSubmit = async (values: any) => {
         try {
             setISLoading(true)
-            const formattedTime = `${values.prolongation}:00`
 
             await api.put(`/offer/update/${selected}?prolongation=${values.prolongation}`)
             queryClient.invalidateQueries(['main'])
@@ -104,7 +118,7 @@ export default function OperatorsPage() {
         <div className='w-full'>
             <div className='flex gap-3 items-center'>
                 <Button onClick={() => setAddModal(true)}>Добавить девушку</Button>
-                <Button onClick={() => setAddModal(true)}>Добавить предложение</Button>
+                <Button onClick={() => setOpenOffer(true)}>Добавить предложение</Button>
             </div>
 
             <CommonTable table={table} columns={columns} isLoading={isLoading} />
@@ -127,6 +141,13 @@ export default function OperatorsPage() {
                 isCreateDialogOpen={openComment}
                 setIsCreateDialogOpen={setOpenComment}
                 onSubmit={onSubmitComment}
+            />
+
+            <ModalAddOffer
+                isCreateDialogOpen={openOffer}
+                setIsCreateDialogOpen={setOpenOffer}
+                onSubmit={onSubmitOffer}
+                iSLoading={addLoadingOffer}
             />
         </div>
     )
