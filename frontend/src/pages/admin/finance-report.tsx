@@ -24,7 +24,7 @@ export default function FinanceReport() {
     const [startDate, setStartDateRaw] = useState<string>(
         dayjs().subtract(1, 'day').startOf('day').format('YYYY-MM-DD')
     )
-    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').format('YYYY-MM-DD'))
+    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').add(1, 'day').format('YYYY-MM-DD'))
 
     const setStartDate = (date: any) => {
         if (date) {

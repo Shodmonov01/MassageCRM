@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Sidebar } from './sidebar'
+import { Sidebar } from './Sidebar'
 
 const MainLayout = () => {
     const navigate = useNavigate()
@@ -30,7 +30,9 @@ const MainLayout = () => {
         <div className='flex min-h-screen h-full bg-gray-100'>
             <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-            <main className={`flex-1 p-8 transition-all duration-300 ${isSidebarOpen ? 'ml-2' : 'ml-2'}`}>
+            <main
+                className={`flex-1 p-8 transition-all duration-300 ${isSidebarOpen ? 'ml-2 overflow-x-auto' : 'ml-2'}`}
+            >
                 <Outlet />
             </main>
         </div>

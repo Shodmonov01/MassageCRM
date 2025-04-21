@@ -13,8 +13,8 @@ export default function CommonTable({ table, columns, isLoading }: { table: any;
         )
 
     return (
-        <Table className='border-collapse [&_th]:border [&_td]:border mt-6'>
-            <TableHeader className='!bg-[#f1f1f1]'>
+        <Table className='border-collapse [&_th]:border [&_td]:border mt-6 relative'>
+            <TableHeader className='!bg-[#f1f1f1] !sticky !top-0 z-50 '>
                 {table.getHeaderGroups().map((headerGroup: any) => (
                     <TableRow key={headerGroup.id}>
                         {headerGroup.headers.map((header: any) => (
