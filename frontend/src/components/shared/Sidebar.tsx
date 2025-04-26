@@ -52,7 +52,7 @@ export function Sidebar({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boole
                 <div className='flex flex-col flex-1 justify-between h-[90%] '>
                     <nav>
                         <ul className='space-y-2'>
-                            {menuItems[role].map(item => (
+                            {menuItems?.[role]?.map(item => (
                                 <li key={item.path}>
                                     <NavLink
                                         to={item.path}

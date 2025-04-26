@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { getCoreRowModel, getSortedRowModel, useReactTable, getPaginationRowModel } from '@tanstack/react-table'
 
 import dayjs from 'dayjs'
 
@@ -65,6 +65,7 @@ export default function Archive() {
         state: {
             sorting: sorting
         },
+        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: (updater: any) => {
             if (typeof updater === 'function') {
                 setSorting(updater(sorting))

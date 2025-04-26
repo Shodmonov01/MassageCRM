@@ -7,33 +7,20 @@ export const getColumns = () => {
     return useMemo<ColumnDef<any>[]>(
         () => [
             {
-                accessorKey: 'id',
-                header: ({ column }) => <Sort title='ID' column={column} />
-            },
-            {
                 accessorKey: 'login',
-                header: ({ column }) => <Sort title='Логин' column={column} />
-            },
-            {
-                id: 'branch_name',
-                header: ({ column }) => <Sort title='Филиал' column={column} />
-            },
-            {
-                accessorKey: 'town_name',
-                header: ({ column }) => <Sort title='Город' column={column} />
+                header: ({ column }) => <Sort title='Мастер' column={column} />
             },
             {
                 accessorKey: 'operator_part',
-                header: ({ column }) => <Sort title='Зарплата' column={column} />
-            },
-
-            {
-                accessorKey: 'without_spend',
-                header: ({ column }) => <Sort title='Чистая касса' column={column} />
+                header: ({ column }) => <Sort title='Доход' column={column} />
             },
             {
-                accessorKey: 'result',
-                header: ({ column }) => <Sort title='Итог' column={column} />
+                accessorKey: 'operator_part',
+                header: ({ column }) => <Sort title='Процент' column={column} />
+            },
+            {
+                accessorKey: 'operator_part',
+                header: ({ column }) => <Sort title='Коментарий' column={column} />
             }
         ],
         []

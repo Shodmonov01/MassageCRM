@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { getCoreRowModel, getSortedRowModel, useReactTable, getPaginationRowModel } from '@tanstack/react-table'
 
 import { Plus } from 'lucide-react'
 
@@ -97,6 +97,7 @@ export default function OperatorsPage() {
         state: {
             sorting: sorting
         },
+        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: (updater: any) => {
             if (typeof updater === 'function') {
                 setSorting(updater(sorting))

@@ -95,10 +95,10 @@ export const getColumns = ({ setOpenModal, setSelected, handleEdit }: any) => {
                     return <p>{w} 6%</p>
                 }
             },
-            {
-                accessorKey: 'description',
-                header: ({ column }) => <Sort title='Комментарий' column={column} />
-            },
+            // {
+            //     accessorKey: 'description',
+            //     header: ({ column }) => <Sort title='Комментарий' column={column} />
+            // },
             {
                 id: 'actions',
                 cell: ({ row }: { row: any }) => {

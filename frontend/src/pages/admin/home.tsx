@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { getCoreRowModel, getSortedRowModel, useReactTable, getPaginationRowModel } from '@tanstack/react-table'
 
 import api from '@/api/Api'
 import { TypeOperator } from '@/type/type'
@@ -50,6 +50,7 @@ export default function Home() {
         state: {
             sorting: sorting
         },
+        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: (updater: any) => {
             if (typeof updater === 'function') {
                 setSorting(updater(sorting))

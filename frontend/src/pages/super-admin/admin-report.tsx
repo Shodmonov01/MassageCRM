@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { getCoreRowModel, getSortedRowModel, useReactTable, getPaginationRowModel } from '@tanstack/react-table'
 import { useQueryClient } from '@tanstack/react-query'
 
 import dayjs from 'dayjs'
@@ -97,6 +97,7 @@ export default function AdminReport() {
         state: {
             sorting: sorting
         },
+        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: (updater: any) => {
             if (typeof updater === 'function') {
                 setSorting(updater(sorting))

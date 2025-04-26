@@ -1,91 +1,140 @@
 import { useEffect, useState } from 'react'
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
-
-import dayjs from 'dayjs'
+import { useQuery } from '@tanstack/react-query'
 
 import api from '@/api/Api'
-import { TypeOperator } from '@/type/type'
 
-import FilterDate from '@/components/shared/filter-date'
-import CommonTable from '@/components/shared/table-common'
-import { getColumns } from './components/calculation-column'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export default function Calculation() {
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
-    const [filtered, setFiltered] = useState<any[]>([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [startDate, setStartDateRaw] = useState<string>(dayjs().subtract(1, 'day').startOf('day').toISOString())
-    const [endDate, setEndDateRaw] = useState<string>(dayjs().endOf('day').toISOString())
+    const [selectedTherapist, setSelectedTherapist] = useState('')
+    const [hoursWorked, setHoursWorked] = useState('')
+    const [clientsServed, setClientsServed] = useState('')
+    const [amountEarned, setAmountEarned] = useState('')
+    const [reports, setReports] = useState<any | null>(null)
+    const [worker, setWorker] = useState([])
 
-    const setStartDate = (date: any) => {
-        if (date) {
-            setStartDateRaw(date)
-        } else {
-            setStartDateRaw('')
-        }
-    }
-
-    const setEndDate = (date: any) => {
-        if (date) {
-            setEndDateRaw(date)
-        } else {
-            setEndDateRaw('')
-        }
-    }
-
-    const columns = getColumns()
+    const { data: therapists } = useQuery(['therapists'], async () => {
+        const response = await api.get(`/worker`)
+        return response.data
+    })
 
     useEffect(() => {
-        const handleFilter = async () => {
-            setIsLoading(true)
+        async function fetchWorker() {
             try {
-                if (startDate && endDate) {
-                    const res = await api.post(`/operator/flat`, {
-                        from: startDate,
-                        to: endDate
-                    })
-
-                    setFiltered(res.data)
-                }
+                const response = await api.get(`/worker/result/${selectedTherapist}`)
+                setWorker(response.data)
             } catch (error) {
-                console.log(error)
-            } finally {
-                setIsLoading(false)
+                console.error('Error fetching worker:', error)
             }
         }
 
-        handleFilter()
-    }, [startDate, endDate])
+        if (selectedTherapist) {
+            fetchWorker()
+        }
+    }, [selectedTherapist])
 
-    const table = useReactTable({
-        data: filtered as any,
-        columns,
-        state: {
-            sorting: sorting
-        },
-        onSortingChange: (updater: any) => {
-            if (typeof updater === 'function') {
-                setSorting(updater(sorting))
-            } else {
-                setSorting(updater)
-            }
-        },
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel()
-    })
+    console.log('worker', worker)
+    console.log('selectedTherapist', selectedTherapist)
+
+    const handleReport = async () => {
+        try {
+            await api.post('/worker/result', {
+                admin_id: reports.admin_id,
+                worker_id: selectedTherapist,
+                town_id: reports.town_id,
+                offer_id: reports.offer_id,
+                operator_id: reports.operator_id,
+                cost: reports.cost,
+                percent_worker: Number(hoursWorked),
+                description: clientsServed
+            })
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
+
+    const handleCost = (w: any) => {
+        setAmountEarned(w.cost)
+        setReports(w)
+    }
 
     return (
         <div className='w-full'>
-            <div className='flex justify-between items-center'>
-                <FilterDate
-                    startDate={startDate}
-                    setStartDate={setStartDate}
-                    endDate={endDate}
-                    setEndDate={setEndDate}
-                />
+            <div className='grid gap-6 md:grid-cols-4 mt-6'>
+                <div className='space-y-2'>
+                    <label className='text-sm font-medium'>Мастер</label>
+                    <Select value={selectedTherapist} onValueChange={setSelectedTherapist}>
+                        <SelectTrigger>
+                            <SelectValue placeholder='Мастер' />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {therapists?.map((therapist: any) => (
+                                <SelectItem key={therapist.id} value={therapist.id}>
+                                    {therapist.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className='space-y-2'>
+                    <label className='text-sm font-medium'>Доход</label>
+
+                    <Select
+                        value={amountEarned}
+                        onValueChange={value => {
+                            const selectedWorker = worker?.find((w: any) => w.cost === value)
+                            if (selectedWorker) {
+                                handleCost(selectedWorker)
+                            }
+                        }}
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder='Доход' />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {worker?.map((w: any) => (
+                                <SelectItem key={w.id} value={w.cost}>
+                                    {w.cost}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className='space-y-2'>
+                    <label className='text-sm font-medium'>Процент</label>
+                    <Input
+                        className='bg-white'
+                        type='number'
+                        value={hoursWorked}
+                        onChange={e => setHoursWorked(e.target.value)}
+                        placeholder='0'
+                    />
+                </div>
+
+                <div className='space-y-2'>
+                    <label className='text-sm font-medium'>Коментарий</label>
+                    <Input
+                        className='bg-white'
+                        type='string'
+                        value={clientsServed}
+                        onChange={e => setClientsServed(e.target.value)}
+                        placeholder='коментарий'
+                    />
+                </div>
             </div>
 
-            <CommonTable table={table} columns={columns} isLoading={isLoading} />
+            <Button
+                onClick={handleReport}
+                className='mt-6'
+                disabled={!selectedTherapist || !hoursWorked || !clientsServed || !amountEarned}
+            >
+                Сохранить отчёт
+            </Button>
         </div>
     )
 }

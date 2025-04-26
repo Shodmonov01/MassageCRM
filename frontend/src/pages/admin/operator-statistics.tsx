@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { getCoreRowModel, getSortedRowModel, useReactTable, getPaginationRowModel } from '@tanstack/react-table'
 
 import dayjs from 'dayjs'
 
@@ -39,11 +39,6 @@ export default function OperatorStatistics() {
         }
     }
 
-    const handleEdit = (operator: TypeOperator) => {
-        setSelectedOperator(operator)
-        setIsCreateDialogOpen(true)
-    }
-
     const columns = getColumns()
 
     useEffect(() => {
@@ -74,6 +69,7 @@ export default function OperatorStatistics() {
         state: {
             sorting: sorting
         },
+        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: (updater: any) => {
             if (typeof updater === 'function') {
                 setSorting(updater(sorting))
