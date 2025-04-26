@@ -25,6 +25,10 @@ export default function OperatorsPage() {
     const [openComment, setOpenComment] = useState<boolean>(false)
     const [openOffer, setOpenOffer] = useState<boolean>(false)
     const [addLoadingOffer, setAddLoadingOffer] = useState<boolean>(false)
+    const town = localStorage.getItem('town_id')
+    const branch = localStorage.getItem('branch_id')
+    const operator = localStorage.getItem('id')
+    const admin = localStorage.getItem('admin_id')
 
     const { data: main, isLoading } = useQuery<TypeBranch[]>(['main'], async () => {
         const response = await api.get('/operator/main')
@@ -74,7 +78,16 @@ export default function OperatorsPage() {
         try {
             setAddLoadingOffer(true)
 
-            await api.post(`/offer/create`, { ...values })
+            await api.post(`/offer/create`, {
+                ...values,
+                cost: Number(values.cost),
+                start_time: `${values.start_time}:00`,
+                end_time: `${values.end_time}:00`,
+                admin_id: Number(admin),
+                town_id: Number(town),
+                operator_id: Number(operator),
+                branch_id: Number(branch)
+            })
             queryClient.invalidateQueries(['main'])
             setOpenOffer(false)
         } catch (error) {
@@ -103,7 +116,10 @@ export default function OperatorsPage() {
             setAddLoading(true)
 
             await api.post(`/worker/create`, {
-                ...values
+                ...values,
+                branch_id: Number(branch),
+                town_id: Number(town),
+                operator_id: Number(operator)
             })
             queryClient.invalidateQueries(['main'])
             queryClient.invalidateQueries(['workers'])

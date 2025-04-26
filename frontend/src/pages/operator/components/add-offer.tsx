@@ -24,11 +24,9 @@ const ModalAddOffer: React.FC<{
         defaultValues: {
             start_time: '',
             end_time: '',
-            cost: 0,
-            admin_id: 0,
+            cost: Number(0),
             worker_id: 0,
-            town_id: 0,
-            operator_id: 0,
+
             client_name: '',
             description: ''
         }
@@ -39,55 +37,16 @@ const ModalAddOffer: React.FC<{
             form.reset({
                 start_time: '',
                 end_time: '',
-                cost: 0,
-                admin_id: 0,
+                cost: Number(0),
                 worker_id: 0,
-                town_id: 0,
-                operator_id: 0,
                 client_name: '',
                 description: ''
             })
         }
     }, [isCreateDialogOpen, form])
 
-    const { data: town } = useQuery(
-        ['town'],
-        async () => {
-            const response = await api.get('town')
-            return response.data
-        },
-        {
-            staleTime: 5 * 60 * 1000,
-            cacheTime: 10 * 60 * 1000,
-            refetchOnWindowFocus: false
-        }
-    )
-
-    const { data: operator } = useQuery(
-        ['operator'],
-        async () => {
-            const response = await api.get('/super-admin/operator')
-            return response.data
-        },
-        {
-            staleTime: 5 * 60 * 1000,
-            cacheTime: 10 * 60 * 1000,
-            refetchOnWindowFocus: false
-        }
-    )
-
     const { data: workers } = useQuery(['workers'], async () => {
         const response = await api.get('/worker')
-        return response.data
-    })
-
-    const { data: branches } = useQuery(['branches'], async () => {
-        const response = await api.get('/branch')
-        return response.data
-    })
-
-    const { data: admins } = useQuery(['admins'], async () => {
-        const response = await api.get('/super-admin/all-admin')
         return response.data
     })
 
@@ -180,61 +139,6 @@ const ModalAddOffer: React.FC<{
 
                         <FormField
                             control={form.control}
-                            name='town_id'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Город</FormLabel>
-                                    <Select
-                                        onValueChange={value => field.onChange(Number.parseInt(value))}
-                                        value={field.value ? field.value.toString() : undefined}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder='Выберите' />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {town?.map((a: any, index: number) => (
-                                                <SelectItem key={index + a.id} value={a.id.toString()}>
-                                                    {a.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='admin_id'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Админ</FormLabel>
-                                    <Select
-                                        onValueChange={value => field.onChange(Number.parseInt(value))}
-                                        value={field.value ? field.value.toString() : undefined}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder='Выберите' />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {admins?.map((a: any, index: number) => (
-                                                <SelectItem key={index + a.id} value={a.id.toString()}>
-                                                    {a.login}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
                             name='worker_id'
                             render={({ field }) => (
                                 <FormItem>
@@ -252,34 +156,6 @@ const ModalAddOffer: React.FC<{
                                             {workers?.map((a: any, index: number) => (
                                                 <SelectItem key={index + a.id} value={a.id.toString()}>
                                                     {a.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='operator_id'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Оператор</FormLabel>
-                                    <Select
-                                        onValueChange={value => field.onChange(Number.parseInt(value))}
-                                        value={field.value ? field.value.toString() : undefined}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder='Выберите' />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {operator?.map((a: any, index: number) => (
-                                                <SelectItem key={index + a.id} value={a.id.toString()}>
-                                                    {a.login}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

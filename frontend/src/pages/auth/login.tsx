@@ -42,6 +42,9 @@ const Login = () => {
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('role', res.data.result.role)
             localStorage.setItem('id', res.data.result.id)
+            localStorage.setItem('branch_id', res.data.result.branch_id)
+            localStorage.setItem('town_id', res.data.result.town_id)
+            localStorage.setItem('admin_id', res.data.result.admin_id)
 
             navigate('/')
         } catch (error) {
