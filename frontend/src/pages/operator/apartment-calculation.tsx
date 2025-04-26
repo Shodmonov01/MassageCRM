@@ -123,6 +123,7 @@ export default function OperatorsPage() {
             })
             queryClient.invalidateQueries(['main'])
             queryClient.invalidateQueries(['workers'])
+
             setAddModal(false)
         } catch (error) {
             console.error(error)
