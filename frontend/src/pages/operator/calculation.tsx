@@ -51,6 +51,11 @@ export default function Calculation() {
                 percent_worker: Number(hoursWorked),
                 description: clientsServed
             })
+            setReports(null)
+            setSelectedTherapist('')
+            setHoursWorked('')
+            setClientsServed('')
+            setAmountEarned('')
         } catch (error) {
             console.log('error', error)
         }
